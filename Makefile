@@ -1,3 +1,6 @@
+# TODO import .env variables
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/app_dev?sslmode=disable
+
 dev:
 	air
 
@@ -27,3 +30,18 @@ install-tools:
 	go install github.com/cosmtrek/air@latest
 	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
+sqlc:
+	sqlc generate
+
+MIGRATION=$(error missing "MIGRATION" variable)
+# howto: make migrate-create MIGRATION=init
+migrate-new:
+	migrate create -ext sql -dir db/migrations -seq $(MIGRATION)
+
+migrate:
+	migrate -database ${DATABASE_URL} -path ./db/migrations up
+
+migrate-down:
+	migrate -database ${DATABASE_URL} -path ./db/migrations down
+
