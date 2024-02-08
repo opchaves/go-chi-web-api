@@ -43,7 +43,7 @@ make run
 
 Landing page: [localhost:8080](http://localhost:8080)
 
-API: [localhost:8080](http://localhost:8080/api)
+API: [localhost:8080/api](http://localhost:8080/api)
 
 Building and running the binary
 
