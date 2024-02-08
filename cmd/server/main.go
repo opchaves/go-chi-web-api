@@ -1,17 +1,28 @@
 package main
 
 import (
-	"net/http"
+	"log"
+	"os"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/opchaves/go-chi-web-api/internal/app"
+	"github.com/opchaves/go-chi-web-api/internal/config"
+	"github.com/opchaves/go-chi-web-api/internal/server"
 )
 
 func main() {
-	r := chi.NewRouter()
-	r.Use(middleware.Logger)
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello World!"))
-	})
-	http.ListenAndServe(":8080", r)
+	s := server.New(
+		config.Name,
+		server.UseHost(config.Host),
+		server.UsePort(config.Port),
+	)
+
+	if err := app.AddRoutes(s); err != nil {
+		log.Fatalf("error adding routes: %v", err)
+		os.Exit(1)
+	}
+
+	if err := s.Run(); err != nil {
+		log.Fatalf("error running server: %v", err)
+		os.Exit(1)
+	}
 }
