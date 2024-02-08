@@ -5,6 +5,9 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/httplog/v2"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/opchaves/go-chi-web-api/internal/model"
 )
 
 type Server struct {
@@ -13,11 +16,15 @@ type Server struct {
 	name string
 	host string
 	port string
+
+	Logger *httplog.Logger
+	DB     *pgxpool.Pool
+	Q      *model.Queries
 }
 
 func (s *Server) Run() error {
 	host := fmt.Sprintf("%s:%s", s.host, s.port)
-	fmt.Printf("Server %s is running on %s\n", s.name, host)
+	s.Logger.Debug(fmt.Sprintf("Server is running on %s", host))
 
 	return http.ListenAndServe(host, s)
 }
