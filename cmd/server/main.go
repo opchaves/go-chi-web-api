@@ -14,10 +14,10 @@ func main() {
 
 	s := server.New(
 		config.Name,
-		server.UseLogger(config.Name),
-		server.UseDB(ctx),
 		server.UseHost(config.Host),
 		server.UsePort(config.Port),
+		server.UseLogger(config.Name),
+		server.UseDB(ctx),
 	)
 
 	defer s.DB.Close()
