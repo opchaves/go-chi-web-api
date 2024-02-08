@@ -58,3 +58,4 @@ make start
 - [Pico.css examples](https://github.com/picocss/examples)
 - [Pico V2: A pure HTML example, without dependencies](https://codesandbox.io/s/github/picocss/examples/tree/master/v2-html)
 - [Cache-Control on MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control)
+- [How to setup a PostgreSQL database with Docker Compose](https://blog.cadumagalhaes.dev/how-to-setup-a-postgresql-database-with-docker-compose)

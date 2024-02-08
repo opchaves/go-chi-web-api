@@ -23,6 +23,7 @@ go.work
 bin/
 tmp/
 vendor/
+data/
 
 .env
 .env.local

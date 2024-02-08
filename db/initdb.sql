@@ -1,0 +1,7 @@
+CREATE USER opchaves WITH PASSWORD 'secret';
+
+CREATE DATABASE app_dev;
+GRANT ALL PRIVILEGES ON DATABASE app_dev TO opchaves;
+
+CREATE DATABASE app_test;
+GRANT ALL PRIVILEGES ON DATABASE app_test TO opchaves;

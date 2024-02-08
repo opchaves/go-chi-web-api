@@ -35,4 +35,6 @@ var (
 
 	IsProduction = Env == "production"
 	IsLocal      = Env == "development" || Env == "test"
+
+	DatabaseURL = GetEnv("DATABASE_URL", "postgres://opchaves:secret@localhost:5432/app_dev?sslmode=disable")
 )

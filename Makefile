@@ -14,5 +14,14 @@ build:
 start:
 	./bin/server
 
+db-start:
+	docker compose up -d
+
+db-remove:
+	docker compose down --volumes --remove-orphans
+
+db-sh:
+	docker compose exec postgres psql -U opchaves -d app_dev
+
 install-tools:
 	go install github.com/cosmtrek/air@latest
