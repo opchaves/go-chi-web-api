@@ -8,50 +8,50 @@ import (
 	"mime"
 	"net/http"
 	"path"
+	"strings"
 
 	"github.com/opchaves/go-chi-web-api/internal/config"
 )
 
 var (
-	//go:embed all:public
-	files embed.FS
+	//go:embed all:dist
+	assets embed.FS
 
-	rootPath = "/"
-	errDir   = errors.New("path is dir")
-	maxAge   = 604800 // 7 days
+	errDir = errors.New("path is dir")
+	maxAge = 604800 // 7 days
 )
 
-// TODO https://github.com/go-chi/chi/blob/master/_examples/fileserver/main.go
+func WebHandler(w http.ResponseWriter, r *http.Request) {
+	if strings.HasSuffix(r.URL.Path, "index.html") {
+		newPath := strings.TrimSuffix(r.URL.Path, "index.html")
+		http.Redirect(w, r, newPath, http.StatusMovedPermanently)
+		return
+	}
 
-func Handler(w http.ResponseWriter, r *http.Request) {
-	err := readFile(files, "public", r.URL.Path, w)
+	// try serving an assets
+	err := readFile(r.URL.Path, w)
 	if err == nil {
 		return
 	}
 
-	reqDir := "public"
+	reqPath := ""
 	if err != nil {
 		if err != errDir {
-			// TODO render 404 page instead???
-			http.Error(w, "404 page not found", http.StatusNotFound)
+			_ = readFile("index.html", w)
 			return
 		}
-		if r.URL.Path != rootPath {
-			reqDir = path.Join("public", r.URL.Path)
+		if r.URL.Path != "/" {
+			reqPath = r.URL.Path
 		}
 	}
+	reqPath = path.Join(reqPath, "index.html")
 
-	err = readFile(files, reqDir, "index.html", w)
-	if err != nil {
-		// TODO render 404 page instead???
-		http.Error(w, "404 page not found", http.StatusNotFound)
-		return
-	}
+	_ = readFile(reqPath, w)
 }
 
-func readFile(fs embed.FS, prefix, reqPath string, w http.ResponseWriter) error {
-	pathname := path.Join(prefix, reqPath)
-	f, err := fs.Open(pathname)
+func readFile(reqPath string, w http.ResponseWriter) error {
+	pathname := path.Join("dist", reqPath)
+	f, err := assets.Open(pathname)
 	if err != nil {
 		return err
 	}
@@ -73,3 +73,4 @@ func readFile(fs embed.FS, prefix, reqPath string, w http.ResponseWriter) error 
 	_, err = io.Copy(w, f)
 	return err
 }
+

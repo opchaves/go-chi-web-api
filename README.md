@@ -65,7 +65,6 @@ make start
 - [Go RESTful API Boilerplate with JWT Authentication backed by PostgreSQL](https://github.com/dhax/go-base)
 - [Go Rest API starter kit / Golang API boilerplate base on Chi framework](https://github.com/qreasio/go-starter-kit)
 - [A Golang and HTMX Todo application](https://github.com/paganotoni/todox)
-- [Pico.css examples](https://github.com/picocss/examples)
-- [Pico V2: A pure HTML example, without dependencies](https://codesandbox.io/s/github/picocss/examples/tree/master/v2-html)
+- [Landing page template using Shadcn, React, Typescript and Tailwind](https://github.com/leoMirandaa/shadcn-landing-page)
 - [Cache-Control on MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control)
 - [How to setup a PostgreSQL database with Docker Compose](https://blog.cadumagalhaes.dev/how-to-setup-a-postgresql-database-with-docker-compose)
