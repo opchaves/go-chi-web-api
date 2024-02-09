@@ -24,7 +24,7 @@ db-remove:
 	docker compose down --volumes --remove-orphans
 
 db-sh:
-	docker compose exec postgres psql -U opchaves -d app_dev
+	@docker compose exec postgres psql -U postgres -d app_dev
 
 install-tools:
 	go install github.com/cosmtrek/air@latest
@@ -35,13 +35,13 @@ sqlc:
 	sqlc generate
 
 MIGRATION=$(error missing "MIGRATION" variable)
-# howto: make migrate-create MIGRATION=init
+# howto: make migrate-new MIGRATION=init
 migrate-new:
-	migrate create -ext sql -dir db/migrations -seq $(MIGRATION)
+	@migrate create -ext sql -dir db/migrations -seq $(MIGRATION)
 
 migrate:
-	migrate -database ${DATABASE_URL} -path ./db/migrations up
+	@migrate -database ${DATABASE_URL} -path ./db/migrations up
 
 migrate-down:
-	migrate -database ${DATABASE_URL} -path ./db/migrations down
+	@migrate -database ${DATABASE_URL} -path ./db/migrations down
 

@@ -1,6 +1,14 @@
-# go-chi-web-api
+# Kommonei
 
-Template to start a REST API with Go, Chi, Postgres, Pgx, Sqlc and Docker
+You are the king of your money. You rule your money, or your money will rule you.
+
+Application to help you and family manage your personal finance.
+
+## Tech Stack
+
+- Backend: Go, Chi, Sqlc, Pgx, Docker
+- Database: Postgres
+- Frontend: React, Vite, Shadcn, Tailwind
 
 ## Requirements
 
@@ -10,18 +18,16 @@ Template to start a REST API with Go, Chi, Postgres, Pgx, Sqlc and Docker
 
 ## Getting started
 
-Click on the `Use this template` button to create a repository and then download.
-
-Suppose I named the project as `mywebapi`, I would clone the repo with:
+Clone the repository
 
 ```sh
-git clone git@github.com/opchaves/mywebapi.git
+git clone git@github.com:opchaves/kommonei.git
 ```
 
 Install the needed tools and dependencies
 
 ```sh
-cd mywebapi
+cd kommonei
 make install-tools
 make tidy
 ```
@@ -52,8 +58,11 @@ make build
 make start
 ```
 
-## Links
+## Links & Credits
 
+- [Valkyrie: A Discord clone using React and Go.](https://github.com/sentrionic/Valkyrie)
+- [Go RESTful API Boilerplate with JWT Authentication backed by PostgreSQL](https://github.com/dhax/go-base)
+- [Go Rest API starter kit / Golang API boilerplate base on Chi framework](https://github.com/qreasio/go-starter-kit)
 - [A Golang and HTMX Todo application](https://github.com/paganotoni/todox)
 - [Pico.css examples](https://github.com/picocss/examples)
 - [Pico V2: A pure HTML example, without dependencies](https://codesandbox.io/s/github/picocss/examples/tree/master/v2-html)
