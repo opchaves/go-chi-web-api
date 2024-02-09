@@ -12,7 +12,8 @@ Application to help you and family manage your personal finance.
 
 ## Requirements
 
-- Go
+- Go v1.22+
+- Node v20+
 - Git
 - Docker
 
@@ -24,18 +25,18 @@ Clone the repository
 git clone git@github.com:opchaves/kommonei.git
 ```
 
+Create the env file
+
+```sh
+cp .env.example .env
+```
+
 Install the needed tools and dependencies
 
 ```sh
 cd kommonei
 make install-tools
 make tidy
-```
-
-Create the env file
-
-```sh
-cp .env.example .env
 ```
 
 Running the server in dev mode
