@@ -12,9 +12,11 @@ import (
 
 type Querier interface {
 	CreateUser(ctx context.Context, arg CreateUserParams) (*User, error)
+	CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams) (*Workspace, error)
 	GetUserByEmail(ctx context.Context, email string) (*User, error)
 	GetUserById(ctx context.Context, id uuid.UUID) (*User, error)
 	GetUsers(ctx context.Context) ([]*User, error)
+	GetWorkspacesByUser(ctx context.Context, userID uuid.UUID) ([]*Workspace, error)
 	IsEmailTaken(ctx context.Context, email string) (int32, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (*User, error)
 }
