@@ -10,31 +10,35 @@ import (
 
 var doOnce sync.Once
 
-// GetEnv returns the value of the environment variable named by the key,
-// or a default value (defVal) if the environment variable is not present.
-func GetEnv(name, defVal string) string {
+var (
+	Name = getEnv("APP_NAME", "kommonei")
+	Env  = getEnv("APP_ENV", "development")
+	Host = getEnv("HOST", "0.0.0.0")
+	Port = getEnv("PORT", "8080")
+
+	IsProduction = Env == "production"
+	IsLocal      = Env == "development" || Env == "test"
+	DatabaseURL  = getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/app_dev?sslmode=disable")
+)
+
+func getEnv(name, defaultValue string) string {
 	doOnce.Do(func() {
-		err := godotenv.Load(".env")
-		if err != nil {
-			log.Println("No .env file found. Using default values.")
-		}
+		readEnvFile(".env")
 	})
 
 	if value := os.Getenv(name); value != "" {
 		return value
 	}
 
-	return defVal
+	return defaultValue
 }
 
-var (
-	Name = GetEnv("NAME", "go-chi-web-api")
-	Env  = GetEnv("ENV", "development")
-	Host = GetEnv("HOST", "0.0.0.0")
-	Port = GetEnv("PORT", "8080")
-
-	IsProduction = Env == "production"
-	IsLocal      = Env == "development" || Env == "test"
-
-	DatabaseURL = GetEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/app_dev?sslmode=disable")
-)
+func readEnvFile(filename string) {
+	env := os.Getenv("APP_ENV")
+	if env != "production" {
+		err := godotenv.Load(filename)
+		if err != nil {
+			log.Printf("No %s file found. Using default values.\n", filename)
+		}
+	}
+}
