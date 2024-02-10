@@ -75,6 +75,11 @@ make start
 
 ## TODO
 
+- [ ] Is a nginx config needed when running on Digital Ocean?
+
+  - App will be served from Go
+  - If app were server from nginx. [Setup docker to run React app](https://gist.github.com/przbadu/929fc2b0d5d4cd78a5efe76d37f891b6)
+
 - [ ] Deploy to Digital Ocean using its container registry (DOCR)
 
   [DigitalOcean Container Registry](https://docs.digitalocean.com/products/container-registry/)
