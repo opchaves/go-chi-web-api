@@ -29,18 +29,22 @@ func UseHost(host string) Option {
 
 // TODO add other config options like: `version`, ...
 func UseLogger(serviceName string) Option {
+	logLevel := slog.LevelDebug
+	if config.IsProduction {
+		logLevel = slog.LevelInfo
+	}
+
 	return func(s *Server) {
 		s.Logger = httplog.NewLogger(serviceName, httplog.Options{
 			JSON:             config.IsProduction,
-			LogLevel:         slog.LevelDebug,
-			Concise:          true,
-			RequestHeaders:   true,
+			LogLevel:         logLevel,
+			Concise:          !config.IsProduction,
+			RequestHeaders:   config.IsProduction,
 			MessageFieldName: "message",
-			// TimeFieldFormat: time.RFC850,
-			Tags: map[string]string{
-				"version": "v1.0-81aa4244d9fc8076a",
-				"env":     config.Env,
-			},
+			// Tags: map[string]string{
+			// 	"version": "v1.0-81aa4244d9fc8076a",
+			// 	"env":     config.Env,
+			// },
 			QuietDownRoutes: []string{
 				"/",
 				"/ping",
