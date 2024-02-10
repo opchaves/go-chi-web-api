@@ -1,11 +1,16 @@
+SHORT_ID := $(shell git rev-parse --short HEAD)
+
+export V_TAG = ${SHORT_ID}
+
+# This assumes there is a .env file in the root of the project
 define setup_env
   $(eval ENV_FILE := .env)
   $(eval include .env)
   $(eval export)
 endef
 
-devEnv: 
-	$(call setup_env, dev)
+withEnv: 
+	$(call setup_env)
 
 run:
 	go run ./cmd/server/main.go
@@ -30,6 +35,11 @@ build-api:
 	@go build -o bin/server ./cmd/server/main.go
 	@chmod +x bin/server
 
+build-api-prod:
+	@echo "Building production API..."
+	@env GOOS=linux GOARCH=amd64 go build -o bin/server ./cmd/server/main.go
+	@chmod +x bin/server
+
 build-web:
 	@echo "Building Web..."
 	@cd ./web && npm install && npm run build
@@ -37,16 +47,22 @@ build-web:
 start:
 	./bin/server
 
-docker-run:
-	docker compose up --build -d
+docker-up: withEnv
+	@docker compose up --build -d
 
-docker-down:
-	docker compose down
+docker-down: withEnv
+	@docker compose down
 
-db-sh:
+docker-build: withEnv
+	@docker build --target prod -t ${IMAGE_NAME}:${V_TAG} .
+
+docker-run: withEnv
+	@docker run --rm --name ${APP_NAME} -p 8080:8080 ${IMAGE_NAME}:${V_TAG}
+
+db-sh: withEnv
 	@docker compose exec postgres psql -U postgres -d app_dev
 
-migrate: devEnv
+migrate: withEnv
 	@if command -v migrate > /dev/null; then \
 	  migrate -database ${DATABASE_URL} -path ./db/migrations up;\
 	else \
@@ -66,7 +82,7 @@ migrate-new:
 	  migrate create -ext sql -dir db/migrations -seq $(name);\
 	fi
 
-migrate-down: devEnv
+migrate-down: withEnv
 	@migrate -database ${DATABASE_URL} -path ./db/migrations down
 
 install-tools:

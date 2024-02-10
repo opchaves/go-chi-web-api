@@ -70,3 +70,11 @@ make start
 - [How to setup a PostgreSQL database with Docker Compose](https://blog.cadumagalhaes.dev/how-to-setup-a-postgresql-database-with-docker-compose)
 - [ToDo App - Chi router, HTMx](https://github.com/Ujstor/todo-go-htmx)
 - [How to load and export variables from an .env file in Makefile?](https://stackoverflow.com/a/69902063)
+- [Create the smallest and secured golang docker image based on scratch](https://chemidy.medium.com/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324)
+- [Get the short git version hash](https://stackoverflow.com/questions/5694389/get-the-short-git-version-hash)
+
+## TODO
+
+- [ ] Deploy to Digital Ocean using its container registry (DOCR)
+
+  [DigitalOcean Container Registry](https://docs.digitalocean.com/products/container-registry/)
