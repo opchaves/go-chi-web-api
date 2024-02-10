@@ -10,16 +10,18 @@ devEnv:
 run:
 	go run ./cmd/server/main.go
 
+run-web:
+	cd web && npm run dev
+
 tidy:
 	go mod tidy
 
 build:
-	make build-web
 	go build -o bin/server ./cmd/server/main.go
 	chmod +x bin/server
 
 build-web:
-	cd ./internal/web && npm install && npm run build
+	cd ./web && npm install && npm run build
 
 start:
 	./bin/server
