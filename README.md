@@ -68,3 +68,5 @@ make start
 - [Landing page template using Shadcn, React, Typescript and Tailwind](https://github.com/leoMirandaa/shadcn-landing-page)
 - [Cache-Control on MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control)
 - [How to setup a PostgreSQL database with Docker Compose](https://blog.cadumagalhaes.dev/how-to-setup-a-postgresql-database-with-docker-compose)
+- [ToDo App - Chi router, HTMx](https://github.com/Ujstor/todo-go-htmx)
+- [How to load and export variables from an .env file in Makefile?](https://stackoverflow.com/a/69902063)
