@@ -36,13 +36,6 @@ WORKDIR $GOPATH/src/webapp
 COPY . .
 RUN go mod download
 RUN go mod verify
-
-# FROM base as dev
-# RUN go install github.com/cosmtrek/air@latest
-# EXPOSE 8080
-# CMD [ "make", "watch-api" ]
-
-FROM base as build_prod
 COPY --from=build_client /app/dist/* ./internal/web/build/
 RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o $GOPATH/bin/server ./cmd/server/main.go
 EXPOSE 8080

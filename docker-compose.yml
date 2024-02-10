@@ -12,7 +12,8 @@ services:
     ports:
       - 5432:5432
     networks:
-      - db-network
+      - backend
+
   pgadmin:
     image: dpage/pgadmin4
     environment:
@@ -23,11 +24,13 @@ services:
     volumes:
       - ./db/servers.json:/pgadmin4/servers.json
     networks:
-      - db-network
+      - backend
+    depends_on:
+      - postgres
 
 volumes:
   db-volume:
 
 networks:
-  db-network:
+  backend:
     driver: bridge
