@@ -10,18 +10,29 @@ devEnv:
 run:
 	go run ./cmd/server/main.go
 
-run-web:
+dev:
+	make watch-api & make watch-web
+
+watch-web:
 	cd web && npm run dev
 
 tidy:
 	go mod tidy
 
 build:
-	go build -o bin/server ./cmd/server/main.go
-	chmod +x bin/server
+	@make build-web
+	@cp -r ./web/dist/* ./internal/web/build/
+	make build-api
+	@echo "Done!"
+
+build-api:
+	@echo "Building API..."
+	@go build -o bin/server ./cmd/server/main.go
+	@chmod +x bin/server
 
 build-web:
-	cd ./web && npm install && npm run build
+	@echo "Building Web..."
+	@cd ./web && npm install && npm run build
 
 start:
 	./bin/server
@@ -62,7 +73,7 @@ install-tools:
 	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
 # Live Reload
-dev:
+watch-api:
 	@if command -v air > /dev/null; then \
 	  air; \
 	  echo "Watching...";\
