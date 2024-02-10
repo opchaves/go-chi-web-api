@@ -14,11 +14,12 @@ import (
 )
 
 var (
-	//go:embed all:dist
+	//go:embed all:build
 	assets embed.FS
 
-	errDir = errors.New("path is dir")
-	maxAge = 604800 // 7 days
+	assetsDir = "build"
+	errDir    = errors.New("path is dir")
+	maxAge    = 604800 // 7 days
 )
 
 func WebHandler(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +51,7 @@ func WebHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func readFile(reqPath string, w http.ResponseWriter) error {
-	pathname := path.Join("dist", reqPath)
+	pathname := path.Join(assetsDir, reqPath)
 	f, err := assets.Open(pathname)
 	if err != nil {
 		return err
@@ -73,4 +74,3 @@ func readFile(reqPath string, w http.ResponseWriter) error {
 	_, err = io.Copy(w, f)
 	return err
 }
-
