@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/httplog/v2"
 	"github.com/go-chi/render"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
 	"github.com/opchaves/go-chi-web-api/internal/config"
 	"github.com/opchaves/go-chi-web-api/internal/model"
@@ -67,7 +68,11 @@ type createInput struct {
 }
 
 func (a *createInput) Bind(r *http.Request) error {
-	return nil
+	return validation.ValidateStruct(a,
+		validation.Field(&a.Name, validation.Required),
+		validation.Field(&a.Currency, validation.In("BRL", "USD", "EUR")),
+		validation.Field(&a.Language, validation.In("pt-br", "en-us")),
+	)
 }
 
 type createResponse struct {
@@ -84,7 +89,7 @@ func (wr *WorkspaceResource) createWorkspace(w http.ResponseWriter, r *http.Requ
 
 	input := &createInput{}
 	if err := render.Bind(r, input); err != nil {
-		render.Render(w, r, ErrInvalidRequest(err))
+		render.Render(w, r, ErrRender(err))
 		return
 	}
 
