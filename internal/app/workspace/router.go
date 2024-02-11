@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/opchaves/go-chi-web-api/internal/config"
 	"github.com/opchaves/go-chi-web-api/internal/model"
+	"github.com/opchaves/go-chi-web-api/pkg/pagination"
 )
 
 type WorkspaceResource struct {
@@ -45,7 +46,13 @@ func (wr *WorkspaceResource) get(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, ErrInvalidRequest(err))
 	}
 
-	workspaces, err := wr.Q.GetWorkspacesByUser(r.Context(), id)
+	pages := pagination.NewFromRequest(r, -1)
+	params := model.GetWorkspacesByUserParams{
+		UserID: id,
+		Limit:  int32(pages.Limit()),
+		Offset: int32(pages.Offset()),
+	}
+	workspaces, err := wr.Q.GetWorkspacesByUser(r.Context(), params)
 
 	list := []render.Renderer{}
 	for _, w := range workspaces {

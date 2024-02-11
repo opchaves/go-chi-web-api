@@ -1,5 +1,5 @@
 -- name: GetWorkspacesByUser :many
-SELECT * FROM workspaces WHERE user_id = $1;
+SELECT * FROM workspaces WHERE user_id = $1 LIMIT $2 OFFSET $3;
 
 -- name: CreateWorkspace :one
 INSERT INTO workspaces (

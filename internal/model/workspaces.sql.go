@@ -52,11 +52,17 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 }
 
 const getWorkspacesByUser = `-- name: GetWorkspacesByUser :many
-SELECT id, name, description, currency, language, user_id, created_at, updated_at FROM workspaces WHERE user_id = $1
+SELECT id, name, description, currency, language, user_id, created_at, updated_at FROM workspaces WHERE user_id = $1 LIMIT $2 OFFSET $3
 `
 
-func (q *Queries) GetWorkspacesByUser(ctx context.Context, userID uuid.UUID) ([]*Workspace, error) {
-	rows, err := q.db.Query(ctx, getWorkspacesByUser, userID)
+type GetWorkspacesByUserParams struct {
+	UserID uuid.UUID `json:"user_id"`
+	Limit  int32     `json:"limit"`
+	Offset int32     `json:"offset"`
+}
+
+func (q *Queries) GetWorkspacesByUser(ctx context.Context, arg GetWorkspacesByUserParams) ([]*Workspace, error) {
+	rows, err := q.db.Query(ctx, getWorkspacesByUser, arg.UserID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
