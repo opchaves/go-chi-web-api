@@ -33,9 +33,10 @@ RUN adduser \
 # GOPATH is set in the go image
 # GOPATH/bin is added to the path there.
 WORKDIR $GOPATH/src/webapp
-COPY . .
+COPY go.mod go.sum .
 RUN go mod download
 RUN go mod verify
+COPY . .
 COPY --from=build_client /app/dist/* ./internal/web/build/
 RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o $GOPATH/bin/server ./cmd/server/main.go
 EXPOSE 8080
@@ -43,9 +44,9 @@ CMD [ "make", "start" ]
 
 FROM scratch as prod
 # Import the user and group files from the builder.
-COPY --from=build_prod /etc/passwd /etc/passwd
-COPY --from=build_prod /etc/group /etc/group
-COPY --from=build_prod /go/bin/server /bin/server
+COPY --from=base /etc/passwd /etc/passwd
+COPY --from=base /etc/group /etc/group
+COPY --from=base /go/bin/server /bin/server
 ARG APP_ENV=production
 EXPOSE 8080
 CMD ["/bin/server"]
