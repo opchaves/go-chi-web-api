@@ -14,6 +14,7 @@ require (
 	github.com/jaytaylor/html2text v0.0.0-20230321000545-74c2419ad056
 	github.com/joho/godotenv v1.5.1
 	github.com/lestrrat-go/jwx/v2 v2.0.17
+	github.com/mssola/useragent v1.0.0
 	github.com/stretchr/testify v1.8.4
 	github.com/vanng822/go-premailer v1.20.2
 	golang.org/x/crypto v0.17.0

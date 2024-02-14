@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"strconv"
 	"sync"
 	"time"
 
@@ -21,9 +22,13 @@ var (
 	IsLocal      = Env == "development" || Env == "test"
 	DatabaseURL  = getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/app_dev?sslmode=disable")
 
-	JwtSecret        = "superSecret"
-	JwtExpiry        = 15 * time.Minute
-	JwtRefreshExpiry = 1 * time.Hour
+	JwtSecret        = getEnv("JWT_SECRET", "superSecret")
+	JwtExpiry        = toDuration("JWT_EXPIRY", "15m")
+	JwtRefreshExpiry = toDuration("JWT_REFRESH_EXPIRY", "1h")
+
+	LoginTokenURL    = getEnv("LOGIN_TOKEN_URL", "http://localhost:8080/token")
+	LoginTokenLength = toInt("LOGIN_TOKEN_LENGTH", "16")
+	LoginTokenExpiry = toDuration("LOGIN_TOKEN_EXPIRY", "10m")
 
 	EmailSmtpHost = ""
 	EmailSmtpPort = 0
@@ -31,7 +36,25 @@ var (
 	EmailSmptPass = ""
 	EmailFromAddr = ""
 	EmailFromName = ""
+
+	LetterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 )
+
+func toDuration(envVar string, defaultVal string) time.Duration {
+	val, err := time.ParseDuration(getEnv(envVar, defaultVal))
+	if err != nil {
+		log.Fatalf("Invalid value for %s: %s", envVar, err)
+	}
+	return val
+}
+
+func toInt(envVar string, defaultVal string) int {
+	val, err := strconv.Atoi(getEnv(envVar, defaultVal))
+	if err != nil {
+		log.Fatalf("Invalid value for %s: %s", envVar, err)
+	}
+	return val
+}
 
 func getEnv(name, defaultValue string) string {
 	doOnce.Do(func() {

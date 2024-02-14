@@ -5,6 +5,8 @@ import (
 	"errors"
 	"sync"
 	"time"
+
+	"github.com/opchaves/go-chi-web-api/internal/config"
 )
 
 var (
@@ -18,6 +20,7 @@ type LoginToken struct {
 	Expiry time.Time
 }
 
+// TODO maybe use Redis or other storage for tokens
 // LoginTokenAuth implements passwordless login authentication flow using temporary in-memory stored tokens.
 type LoginTokenAuth struct {
 	token            map[string]LoginToken
@@ -31,9 +34,9 @@ type LoginTokenAuth struct {
 func NewLoginTokenAuth() (*LoginTokenAuth, error) {
 	a := &LoginTokenAuth{
 		token:            make(map[string]LoginToken),
-		loginURL:         "http://localhost:3000/login",
-		loginTokenLength: 8,
-		loginTokenExpiry: 11 * time.Minute,
+		loginURL:         config.LoginTokenURL,
+		loginTokenLength: config.LoginTokenLength,
+		loginTokenExpiry: config.LoginTokenExpiry,
 	}
 	return a, nil
 }
@@ -87,8 +90,6 @@ func (a *LoginTokenAuth) purgeExpired() {
 	}
 }
 
-const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-
 func randStringBytes(n int) string {
 	buf := make([]byte, n)
 	if _, err := rand.Read(buf); err != nil {
@@ -96,7 +97,7 @@ func randStringBytes(n int) string {
 	}
 
 	for k, v := range buf {
-		buf[k] = letterBytes[v%byte(len(letterBytes))]
+		buf[k] = config.LetterBytes[v%byte(len(config.LetterBytes))]
 	}
 	return string(buf)
 }
