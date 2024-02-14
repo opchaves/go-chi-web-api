@@ -9,6 +9,17 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Token struct {
+	ID         uuid.UUID        `json:"id"`
+	Token      string           `json:"token"`
+	Identifier *string          `json:"identifier"`
+	Mobile     bool             `json:"mobile"`
+	UserID     uuid.UUID        `json:"user_id"`
+	ExpiresAt  pgtype.Timestamp `json:"expires_at"`
+	CreatedAt  pgtype.Timestamp `json:"created_at"`
+	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
+}
+
 type User struct {
 	ID                uuid.UUID        `json:"id"`
 	FirstName         string           `json:"first_name"`

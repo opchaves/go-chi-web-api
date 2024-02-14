@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httplog/v2"
 	"github.com/go-chi/render"
+	"github.com/opchaves/go-chi-web-api/internal/app/auth/pwdless"
 	"github.com/opchaves/go-chi-web-api/internal/app/workspace"
 	"github.com/opchaves/go-chi-web-api/internal/config"
 	"github.com/opchaves/go-chi-web-api/internal/server"
@@ -29,7 +30,13 @@ func AddRoutes(r *server.Server) error {
 	}
 
 	workspaceResource := workspace.NewWorkspaceResource(app)
+	authResource, err := pwdless.NewResource(r.DB, r.Q)
 
+	if err != nil {
+		return err
+	}
+
+	r.Mount("/auth", authResource.Router())
 	r.Route("/api", func(r chi.Router) {
 		r.Get("/", apiHello)
 		r.Route("/v1", func(r chi.Router) {

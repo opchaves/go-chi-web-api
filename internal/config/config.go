@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -19,6 +20,17 @@ var (
 	IsProduction = Env == "production"
 	IsLocal      = Env == "development" || Env == "test"
 	DatabaseURL  = getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/app_dev?sslmode=disable")
+
+	JwtSecret        = "superSecret"
+	JwtExpiry        = 15 * time.Minute
+	JwtRefreshExpiry = 1 * time.Hour
+
+	EmailSmtpHost = ""
+	EmailSmtpPort = 0
+	EmailSmtpUser = ""
+	EmailSmptPass = ""
+	EmailFromAddr = ""
+	EmailFromName = ""
 )
 
 func getEnv(name, defaultValue string) string {

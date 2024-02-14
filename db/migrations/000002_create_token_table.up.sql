@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS tokens(
   "identifier" VARCHAR,
   "mobile" BOOLEAN NOT NULL DEFAULT false,
   "user_id" UUID NOT NULL,
+  "expires_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   "created_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   CONSTRAINT "pk_tokens_id" PRIMARY KEY ("id"),
