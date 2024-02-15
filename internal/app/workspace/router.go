@@ -9,17 +9,18 @@ import (
 	"github.com/go-chi/render"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
-	"github.com/opchaves/go-chi-web-api/internal/config"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/opchaves/go-chi-web-api/internal/model"
 	"github.com/opchaves/go-chi-web-api/pkg/pagination"
 )
 
 type WorkspaceResource struct {
-	*config.App
+	DB *pgxpool.Pool
+	Q  *model.Queries
 }
 
-func NewWorkspaceResource(app *config.App) *WorkspaceResource {
-	return &WorkspaceResource{app}
+func NewWorkspaceResource(db *pgxpool.Pool, q *model.Queries) *WorkspaceResource {
+	return &WorkspaceResource{DB: db, Q: q}
 }
 
 func (wr *WorkspaceResource) Router() *chi.Mux {

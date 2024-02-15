@@ -54,7 +54,11 @@ func (rs *Resource) Router() *chi.Mux {
 	r.Use(render.SetContentType(render.ContentTypeJSON))
 	r.Post("/login", rs.login)
 	r.Post("/token", rs.token)
-	r.Post("/refresh", rs.refresh)
-	r.Post("/logout", rs.logout)
+	r.Group(func(r chi.Router) {
+		r.Use(rs.TokenAuth.Verifier())
+		r.Use(jwt.AuthenticateRefreshJWT)
+		r.Post("/refresh", rs.refresh)
+		r.Post("/logout", rs.logout)
+	})
 	return r
 }

@@ -2,14 +2,16 @@ package app
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"github.com/go-chi/httplog/v2"
 	"github.com/go-chi/render"
+	"github.com/opchaves/go-chi-web-api/internal/app/auth/jwt"
 	"github.com/opchaves/go-chi-web-api/internal/app/auth/pwdless"
 	"github.com/opchaves/go-chi-web-api/internal/app/workspace"
 	"github.com/opchaves/go-chi-web-api/internal/config"
@@ -18,18 +20,17 @@ import (
 )
 
 func AddRoutes(r *server.Server) error {
-	r.Use(middleware.RequestID)
-	r.Use(httplog.RequestLogger(r.Logger))
-	r.Use(middleware.Heartbeat("/ping"))
 	r.Use(middleware.Recoverer)
+	r.Use(middleware.RequestID)
+	r.Use(middleware.Timeout(15 * time.Second))
+	r.Use(httplog.RequestLogger(r.Logger))
 	r.Use(render.SetContentType(render.ContentTypeJSON))
 
-	app := &config.App{
-		DB: r.DB,
-		Q:  r.Q,
+	if config.Origins != "" {
+		r.Use(corsConfig().Handler)
 	}
 
-	workspaceResource := workspace.NewWorkspaceResource(app)
+	workspaceResource := workspace.NewWorkspaceResource(r.DB, r.Q)
 	authResource, err := pwdless.NewResource(r.DB, r.Q)
 
 	if err != nil {
@@ -37,13 +38,17 @@ func AddRoutes(r *server.Server) error {
 	}
 
 	r.Mount("/auth", authResource.Router())
-	r.Route("/api", func(r chi.Router) {
-		r.Get("/", apiHello)
-		r.Route("/v1", func(r chi.Router) {
+	r.Group(func(r chi.Router) {
+		r.Use(authResource.TokenAuth.Verifier())
+		r.Use(jwt.Authenticator)
+		r.Route("/api/v1", func(r chi.Router) {
 			r.Use(apiVersionCtx("v1"))
-			r.Get("/", apiHello)
 			r.Mount("/workspaces", workspaceResource.Router())
 		})
+	})
+
+	r.Get("/health", func(w http.ResponseWriter, _ *http.Request) {
+		w.Write([]byte("ok"))
 	})
 
 	r.Get("/*", web.WebHandler)
@@ -62,12 +67,17 @@ func apiVersionCtx(version string) func(next http.Handler) http.Handler {
 	}
 }
 
-func apiHello(w http.ResponseWriter, r *http.Request) {
-	apiVersion := r.Context().Value(config.CTX_VERSION)
-	msg := fmt.Sprintf(`Hello from %v`, r.URL.Path)
-	result := map[string]interface{}{"message": msg}
-	if apiVersion != nil {
-		result["apiVersion"] = apiVersion
-	}
-	render.JSON(w, r, result)
+func corsConfig() *cors.Cors {
+	// Basic CORS
+	// for more ideas, see: https://developer.github.com/v3/#cross-origin-resource-sharing
+	return cors.New(cors.Options{
+		// AllowedOrigins: []string{"https://foo.com"}, // Use this to allow specific origin hosts
+		AllowedOrigins: []string{"*"},
+		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           86400, // Maximum value not ignored by any of major browsers
+	})
 }

@@ -1,13 +1,7 @@
 package config
 
-import (
-	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/opchaves/go-chi-web-api/internal/model"
+const (
+	CTX_VERSION = "api_version"
+	CTX_CLAIMS  = "jwt_claims"
+	CTX_REFRESH = "jwt_refresh_token"
 )
-
-const CTX_VERSION = "apiVersion"
-
-type App struct {
-	DB *pgxpool.Pool
-	Q  *model.Queries
-}

@@ -13,10 +13,11 @@ import (
 var doOnce sync.Once
 
 var (
-	Name = getEnv("APP_NAME", "kommonei")
-	Env  = getEnv("APP_ENV", "development")
-	Host = getEnv("HOST", "0.0.0.0")
-	Port = getEnv("PORT", "8080")
+	Name    = getEnv("APP_NAME", "kommonei")
+	Env     = getEnv("APP_ENV", "development")
+	Host    = getEnv("HOST", "0.0.0.0")
+	Port    = getEnv("PORT", "8080")
+	Origins = getEnv("ORIGINS", "")
 
 	IsProduction = Env == "production"
 	IsLocal      = Env == "development" || Env == "test"
