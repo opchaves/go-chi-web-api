@@ -60,8 +60,8 @@ func apiVersionCtx(version string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
-			httplog.LogEntrySetField(ctx, config.CTX_VERSION, slog.StringValue(version))
-			r = r.WithContext(context.WithValue(ctx, config.CTX_VERSION, version))
+			httplog.LogEntrySetField(ctx, "api_version", slog.StringValue(version))
+			r = r.WithContext(context.WithValue(ctx, config.CtxVersion, version))
 			next.ServeHTTP(w, r)
 		})
 	}

@@ -10,6 +10,7 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/opchaves/go-chi-web-api/internal/app/auth/jwt"
 	"github.com/opchaves/go-chi-web-api/internal/model"
 	"github.com/opchaves/go-chi-web-api/pkg/pagination"
 )
@@ -26,7 +27,7 @@ func NewWorkspaceResource(db *pgxpool.Pool, q *model.Queries) *WorkspaceResource
 func (wr *WorkspaceResource) Router() *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Get("/{id}", wr.get)
+	r.Get("/", wr.get)
 	r.Post("/", wr.createWorkspace)
 
 	return r
@@ -42,19 +43,18 @@ func (wr *WorkspaceResource) get(w http.ResponseWriter, r *http.Request) {
 	oplog := log(r)
 	oplog.Info("list workspaces by user")
 
-	// TODO get userId from context after jwt auth is implemented
-	id, err := uuid.Parse(chi.URLParam(r, "id"))
-	if err != nil {
-		render.Render(w, r, ErrInvalidRequest(err))
-	}
-
+	claims := jwt.ClaimsFromCtx(r.Context())
 	pages := pagination.NewFromRequest(r, -1)
 	params := model.GetWorkspacesByUserParams{
-		UserID: id,
+		UserID: uuid.MustParse(claims.ID),
 		Limit:  int32(pages.Limit()),
 		Offset: int32(pages.Offset()),
 	}
+
 	workspaces, err := wr.Q.GetWorkspacesByUser(r.Context(), params)
+	if err != nil {
+		render.Render(w, r, ErrInvalidRequest(err))
+	}
 
 	list := []render.Renderer{}
 	for _, w := range workspaces {

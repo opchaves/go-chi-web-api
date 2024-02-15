@@ -9,23 +9,17 @@ import (
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/go-chi/render"
 	"github.com/lestrrat-go/jwx/v2/jwt"
-)
-
-type ctxKey int
-
-const (
-	ctxClaims ctxKey = iota
-	ctxRefreshToken
+	"github.com/opchaves/go-chi-web-api/internal/config"
 )
 
 // ClaimsFromCtx retrieves the parsed AppClaims from request context.
 func ClaimsFromCtx(ctx context.Context) AppClaims {
-	return ctx.Value(ctxClaims).(AppClaims)
+	return ctx.Value(config.CtxClaims).(AppClaims)
 }
 
 // RefreshTokenFromCtx retrieves the parsed refresh token from context.
 func RefreshTokenFromCtx(ctx context.Context) string {
-	return ctx.Value(ctxRefreshToken).(string)
+	return ctx.Value(config.CtxRefreshToken).(string)
 }
 
 func log(r *http.Request) slog.Logger {
@@ -61,7 +55,7 @@ func Authenticator(next http.Handler) http.Handler {
 		}
 
 		// Set AppClaims on context
-		ctx := context.WithValue(r.Context(), ctxClaims, c)
+		ctx := context.WithValue(r.Context(), config.CtxClaims, c)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -93,7 +87,7 @@ func AuthenticateRefreshJWT(next http.Handler) http.Handler {
 		}
 
 		// Set refresh token string on context
-		ctx := context.WithValue(r.Context(), ctxRefreshToken, c.Token)
+		ctx := context.WithValue(r.Context(), config.CtxRefreshToken, c.Token)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
