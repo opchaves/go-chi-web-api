@@ -90,8 +90,6 @@ func (a *TokenAuth) CreateRefreshJWT(c RefreshClaims) (string, error) {
 	return tokenString, err
 }
 
-const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-
 func randStringBytes(n int) string {
 	buf := make([]byte, n)
 	if _, err := rand.Read(buf); err != nil {
@@ -99,7 +97,7 @@ func randStringBytes(n int) string {
 	}
 
 	for k, v := range buf {
-		buf[k] = letterBytes[v%byte(len(letterBytes))]
+		buf[k] = config.LetterBytes[v%byte(len(config.LetterBytes))]
 	}
 	return string(buf)
 }

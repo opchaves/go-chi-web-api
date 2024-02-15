@@ -52,6 +52,15 @@ func (q *Queries) CreateToken(ctx context.Context, arg CreateTokenParams) (*Toke
 	return &i, err
 }
 
+const deleteTokenByID = `-- name: DeleteTokenByID :exec
+DELETE FROM tokens WHERE id = $1
+`
+
+func (q *Queries) DeleteTokenByID(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteTokenByID, id)
+	return err
+}
+
 const getToken = `-- name: GetToken :one
 SELECT id, token, identifier, mobile, user_id, expires_at, created_at, updated_at FROM tokens WHERE token = $1
 `
@@ -123,4 +132,23 @@ func (q *Queries) GetTokensByUser(ctx context.Context, userID uuid.UUID) ([]*Tok
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateToken = `-- name: UpdateToken :exec
+UPDATE tokens SET
+  token = $1,
+  expires_at = $2,
+  updated_at = now()
+WHERE id = $3
+`
+
+type UpdateTokenParams struct {
+	Token     string           `json:"token"`
+	ExpiresAt pgtype.Timestamp `json:"expires_at"`
+	ID        uuid.UUID        `json:"id"`
+}
+
+func (q *Queries) UpdateToken(ctx context.Context, arg UpdateTokenParams) error {
+	_, err := q.db.Exec(ctx, updateToken, arg.Token, arg.ExpiresAt, arg.ID)
+	return err
 }
