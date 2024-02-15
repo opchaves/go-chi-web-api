@@ -12,17 +12,14 @@ SELECT 1 FROM users WHERE email = $1;
 
 -- name: CreateUser :one
 INSERT INTO users (
-  id,
   first_name,
   last_name,
   email,
   password,
   verified,
   verification_token,
-  avatar,
-  created_at,
-  updated_at
-) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *;
+  avatar
+) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;
 
 -- name: UpdateUser :one
 UPDATE users SET

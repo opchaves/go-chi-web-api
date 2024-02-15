@@ -62,6 +62,9 @@ docker-run: withEnv
 db-sh: withEnv
 	@docker compose exec postgres psql -U postgres -d app_dev
 
+db-seed: withEnv
+	@go run ./cmd/seed/main.go
+
 migrate: withEnv
 	@if command -v migrate > /dev/null; then \
 	  migrate -database ${DATABASE_URL} -path ./db/migrations up;\

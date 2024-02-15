@@ -9,40 +9,32 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
-  id,
   first_name,
   last_name,
   email,
   password,
   verified,
   verification_token,
-  avatar,
-  created_at,
-  updated_at
-) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, first_name, last_name, email, password, verified, verification_token, avatar, created_at, updated_at
+  avatar
+) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, first_name, last_name, email, password, verified, verification_token, avatar, created_at, updated_at
 `
 
 type CreateUserParams struct {
-	ID                uuid.UUID        `json:"id"`
-	FirstName         string           `json:"first_name"`
-	LastName          string           `json:"last_name"`
-	Email             string           `json:"email"`
-	Password          string           `json:"password"`
-	Verified          bool             `json:"verified"`
-	VerificationToken *string          `json:"verification_token"`
-	Avatar            string           `json:"avatar"`
-	CreatedAt         pgtype.Timestamp `json:"created_at"`
-	UpdatedAt         pgtype.Timestamp `json:"updated_at"`
+	FirstName         string  `json:"first_name"`
+	LastName          string  `json:"last_name"`
+	Email             string  `json:"email"`
+	Password          string  `json:"password"`
+	Verified          bool    `json:"verified"`
+	VerificationToken *string `json:"verification_token"`
+	Avatar            string  `json:"avatar"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (*User, error) {
 	row := q.db.QueryRow(ctx, createUser,
-		arg.ID,
 		arg.FirstName,
 		arg.LastName,
 		arg.Email,
@@ -50,8 +42,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (*User, 
 		arg.Verified,
 		arg.VerificationToken,
 		arg.Avatar,
-		arg.CreatedAt,
-		arg.UpdatedAt,
 	)
 	var i User
 	err := row.Scan(
