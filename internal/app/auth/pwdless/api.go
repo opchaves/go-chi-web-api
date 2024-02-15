@@ -9,18 +9,6 @@ import (
 	"github.com/opchaves/go-chi-web-api/internal/model"
 )
 
-// AuthStorer defines database operations on accounts and tokens.
-// type AuthStorer interface {
-// 	GetAccount(id string) (*model.User, error)
-// 	GetAccountByEmail(email string) (*model.User, error)
-// 	UpdateAccount(a *model.User) error
-//
-// 	GetToken(token string) (*jwt.Token, error)
-// 	CreateOrUpdateToken(t *jwt.Token) error
-// 	DeleteToken(t *jwt.Token) error
-// 	PurgeExpiredToken() error
-// }
-
 // Mailer defines methods to send account emails.
 type Mailer interface {
 	LoginToken(name, email string, c email.ContentLoginToken) error
@@ -67,5 +55,6 @@ func (rs *Resource) Router() *chi.Mux {
 	r.Post("/login", rs.login)
 	r.Post("/token", rs.token)
 	r.Post("/refresh", rs.refresh)
+	r.Post("/logout", rs.logout)
 	return r
 }
