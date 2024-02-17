@@ -1,4 +1,4 @@
-package workspace
+package app
 
 import (
 	"net/http"

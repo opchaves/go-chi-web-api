@@ -13,7 +13,6 @@ import (
 	"github.com/go-chi/render"
 	"github.com/opchaves/go-chi-web-api/internal/app/auth/jwt"
 	"github.com/opchaves/go-chi-web-api/internal/app/auth/pwdless"
-	"github.com/opchaves/go-chi-web-api/internal/app/workspace"
 	"github.com/opchaves/go-chi-web-api/internal/config"
 	"github.com/opchaves/go-chi-web-api/internal/server"
 	"github.com/opchaves/go-chi-web-api/internal/web"
@@ -30,7 +29,8 @@ func AddRoutes(r *server.Server) error {
 		r.Use(corsConfig().Handler)
 	}
 
-	workspaceResource := workspace.NewWorkspaceResource(r.DB, r.Q)
+	api := New(r.DB)
+
 	authResource, err := pwdless.NewResource(r.DB, r.Q)
 
 	if err != nil {
@@ -43,7 +43,9 @@ func AddRoutes(r *server.Server) error {
 		r.Use(jwt.Authenticator)
 		r.Route("/api/v1", func(r chi.Router) {
 			r.Use(apiVersionCtx("v1"))
-			r.Mount("/workspaces", workspaceResource.Router())
+
+			r.Get("/workspaces", api.getWorkspace)
+			r.Post("/workspaces", api.createWorkspace)
 		})
 	})
 

@@ -16,7 +16,7 @@ func main() {
 		config.Name,
 		server.UseHost(config.Host),
 		server.UsePort(config.Port),
-		server.UseLogger(config.Name),
+		server.UseLogger(),
 		server.UseDB(ctx),
 	)
 

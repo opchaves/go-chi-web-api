@@ -28,14 +28,14 @@ func UseHost(host string) Option {
 }
 
 // TODO add other config options like: `version`, ...
-func UseLogger(serviceName string) Option {
+func UseLogger() Option {
 	logLevel := slog.LevelDebug
 	if config.IsProduction {
 		logLevel = slog.LevelInfo
 	}
 
 	return func(s *Server) {
-		s.Logger = httplog.NewLogger(serviceName, httplog.Options{
+		s.Logger = httplog.NewLogger(config.Name, httplog.Options{
 			JSON:             config.IsProduction,
 			LogLevel:         logLevel,
 			Concise:          !config.IsProduction,
