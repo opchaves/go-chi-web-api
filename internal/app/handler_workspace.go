@@ -97,41 +97,20 @@ func (h *App) createWorkspace(w http.ResponseWriter, r *http.Request) {
 }
 
 func createCategories(ctx context.Context, db *model.Queries, workspace *model.Workspace) error {
-	c1 := model.CreateCategoryParams{
-		WorkspaceID: workspace.ID,
-		UserID:      workspace.UserID,
-		Name:        "food",
-		CatType:     "expense",
+	names := []model.CreateCategoryParams{
+		{Name: "food", CatType: "expense"},
+		{Name: "salary", CatType: "incom"},
+		{Name: "health", CatType: "expense"},
+		{Name: "transport", CatType: "expense"},
 	}
-	c2 := model.CreateCategoryParams{
-		WorkspaceID: workspace.ID,
-		UserID:      workspace.UserID,
-		Name:        "salary",
-		CatType:     "income",
+
+	for _, c := range names {
+		c.WorkspaceID = workspace.ID
+		c.UserID = workspace.UserID
+		if err := db.CreateCategory(ctx, c); err != nil {
+			return err
+		}
 	}
-	c3 := model.CreateCategoryParams{
-		WorkspaceID: workspace.ID,
-		UserID:      workspace.UserID,
-		Name:        "health",
-		CatType:     "expense",
-	}
-	c4 := model.CreateCategoryParams{
-		WorkspaceID: workspace.ID,
-		UserID:      workspace.UserID,
-		Name:        "transport",
-		CatType:     "expense",
-	}
-	err := db.CreateCategory(ctx, c1)
-	if err != nil {
-		return err
-	}
-	err = db.CreateCategory(ctx, c2)
-	if err != nil {
-		return err
-	}
-	err = db.CreateCategory(ctx, c3)
-	if err != nil {
-		return err
-	}
-	return db.CreateCategory(ctx, c4)
+
+	return nil
 }
