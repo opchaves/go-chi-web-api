@@ -88,6 +88,9 @@ migrate-new:
 migrate-down: withEnv
 	@migrate -database ${DATABASE_URL} -path ./db/migrations down
 
+migrate-drop: withEnv
+	@migrate -database ${DATABASE_URL} -path ./db/migrations drop
+
 install-tools:
 	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 

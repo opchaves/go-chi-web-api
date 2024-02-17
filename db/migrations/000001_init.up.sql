@@ -36,7 +36,50 @@ CREATE TABLE IF NOT EXISTS workspaces_users(
   "role" VARCHAR NOT NULL,
   "created_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
-  CONSTRAINT "pk_categories_id" PRIMARY KEY ("workspace_id", "user_id")
+  CONSTRAINT "pk_workspaces_users_id" PRIMARY KEY ("workspace_id", "user_id")
+);
+
+CREATE TABLE IF NOT EXISTS categories(
+  "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+  "name" VARCHAR NOT NULL,
+  "description" VARCHAR,
+  "icon" VARCHAR,
+  "color" VARCHAR,
+  "cat_type" VARCHAR NOT NULL,
+  "user_id" UUID NOT NULL,
+  "workspace_id" UUID NOT NULL,
+  "created_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  "updated_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  CONSTRAINT "pk_categories_id" PRIMARY KEY ("id"),
+  CONSTRAINT "fk_categories_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT "fk_catetories_workspace_id" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS accounts(
+  "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+  "name" VARCHAR NOT NULL,
+  "balance" DECIMAL(10, 2) NOT NULL DEFAULT 0,
+  "user_id" UUID NOT NULL,
+  "workspace_id" UUID NOT NULL,
+  "created_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  "updated_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  CONSTRAINT "pk_accounts_id" PRIMARY KEY ("id"),
+  CONSTRAINT "fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT "fk_accounts_workspace_id" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS tokens(
+  "id" INT GENERATED ALWAYS AS IDENTITY,
+  "token" VARCHAR NOT NULL,
+  "identifier" VARCHAR,
+  "mobile" BOOLEAN NOT NULL DEFAULT false,
+  "user_id" UUID NOT NULL,
+  "expires_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  "created_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  "updated_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  CONSTRAINT "pk_tokens_id" PRIMARY KEY ("id"),
+  CONSTRAINT "uq_tokens_token" UNIQUE ("token"),
+  CONSTRAINT "fk_tokens_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 COMMIT;

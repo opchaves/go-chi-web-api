@@ -9,8 +9,31 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Account struct {
+	ID          uuid.UUID        `json:"id"`
+	Name        string           `json:"name"`
+	Balance     pgtype.Numeric   `json:"balance"`
+	UserID      uuid.UUID        `json:"user_id"`
+	WorkspaceID uuid.UUID        `json:"workspace_id"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+}
+
+type Category struct {
+	ID          uuid.UUID        `json:"id"`
+	Name        string           `json:"name"`
+	Description *string          `json:"description"`
+	Icon        *string          `json:"icon"`
+	Color       *string          `json:"color"`
+	CatType     string           `json:"cat_type"`
+	UserID      uuid.UUID        `json:"user_id"`
+	WorkspaceID uuid.UUID        `json:"workspace_id"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+}
+
 type Token struct {
-	ID         uuid.UUID        `json:"id"`
+	ID         int32            `json:"id"`
 	Token      string           `json:"token"`
 	Identifier *string          `json:"identifier"`
 	Mobile     bool             `json:"mobile"`

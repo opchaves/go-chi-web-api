@@ -93,7 +93,7 @@ func (rs *Resource) token(w http.ResponseWriter, r *http.Request) {
 	}
 
 	refreshClaims := jwt.RefreshClaims{
-		ID:    newToken.ID.String(),
+		ID:    int(newToken.ID),
 		Token: newToken.Token,
 	}
 

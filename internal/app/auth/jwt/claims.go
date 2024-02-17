@@ -51,7 +51,7 @@ func (c *AppClaims) ParseClaims(claims map[string]interface{}) error {
 
 // RefreshClaims represents the claims parsed from JWT refresh token.
 type RefreshClaims struct {
-	ID    string `json:"id,omitempty"`
+	ID    int    `json:"id,omitempty"`
 	Token string `json:"token,omitempty"`
 	CommonClaims
 }

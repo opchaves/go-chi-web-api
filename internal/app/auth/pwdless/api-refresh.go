@@ -55,7 +55,7 @@ func (rs *Resource) refresh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	refreshClaims := jwt.RefreshClaims{
-		ID:    token.ID.String(),
+		ID:    int(token.ID),
 		Token: tokenParams.Token,
 	}
 

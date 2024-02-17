@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-chi/render"
@@ -69,11 +70,68 @@ func (h *App) createWorkspace(w http.ResponseWriter, r *http.Request) {
 	claims := jwt.ClaimsFromCtx(r.Context())
 	input.UserID = uuid.MustParse(claims.ID)
 
-	workspace, err := h.Q.CreateWorkspace(r.Context(), *input.CreateWorkspaceParams)
+	tx, err := h.DB.Begin(r.Context())
 	if err != nil {
+		render.Render(w, r, ErrInternal)
+	}
+
+	qTx := h.Q.WithTx(tx)
+	defer tx.Rollback(r.Context())
+
+	workspace, err := qTx.CreateWorkspace(r.Context(), *input.CreateWorkspaceParams)
+	if err != nil {
+		oplog.Error("error creating workspace", err)
 		render.Render(w, r, ErrRender(err))
 		return
 	}
 
+	err = createCategories(r.Context(), qTx, workspace)
+	if err != nil {
+		oplog.Error("error creating categories", err)
+		render.Render(w, r, ErrInternal)
+	}
+
+	_ = tx.Commit(r.Context())
+
 	render.Render(w, r, &createResponse{workspace})
+}
+
+func createCategories(ctx context.Context, db *model.Queries, workspace *model.Workspace) error {
+	c1 := model.CreateCategoryParams{
+		WorkspaceID: workspace.ID,
+		UserID:      workspace.UserID,
+		Name:        "food",
+		CatType:     "expense",
+	}
+	c2 := model.CreateCategoryParams{
+		WorkspaceID: workspace.ID,
+		UserID:      workspace.UserID,
+		Name:        "salary",
+		CatType:     "income",
+	}
+	c3 := model.CreateCategoryParams{
+		WorkspaceID: workspace.ID,
+		UserID:      workspace.UserID,
+		Name:        "health",
+		CatType:     "expense",
+	}
+	c4 := model.CreateCategoryParams{
+		WorkspaceID: workspace.ID,
+		UserID:      workspace.UserID,
+		Name:        "transport",
+		CatType:     "expense",
+	}
+	err := db.CreateCategory(ctx, c1)
+	if err != nil {
+		return err
+	}
+	err = db.CreateCategory(ctx, c2)
+	if err != nil {
+		return err
+	}
+	err = db.CreateCategory(ctx, c3)
+	if err != nil {
+		return err
+	}
+	return db.CreateCategory(ctx, c4)
 }
