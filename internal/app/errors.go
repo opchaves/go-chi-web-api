@@ -49,5 +49,18 @@ func ErrRender(err error) render.Renderer {
 	}
 }
 
-var ErrNotFound = &ErrResponse{HTTPStatusCode: 404, StatusText: "Resource not found."}
-var ErrInternal = &ErrResponse{HTTPStatusCode: 500, StatusText: "Internal server error."}
+// The list of default error types without specific error message.
+var (
+	ErrInternal = &ErrResponse{
+		HTTPStatusCode: http.StatusInternalServerError,
+		StatusText:     http.StatusText(http.StatusInternalServerError),
+	}
+	ErrNotFound = &ErrResponse{
+		HTTPStatusCode: http.StatusNotFound,
+		StatusText:     http.StatusText(http.StatusNotFound),
+	}
+	ErrForbidden = &ErrResponse{
+		HTTPStatusCode: http.StatusForbidden,
+		StatusText:     http.StatusText(http.StatusForbidden),
+	}
+)
