@@ -62,7 +62,7 @@ docker-run: withEnv
 db-sh: withEnv
 	@docker compose exec postgres psql -U postgres -d app_dev
 
-db-seed: withEnv
+seed: withEnv
 	@go run ./cmd/seed/main.go
 
 migrate: withEnv
