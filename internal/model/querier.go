@@ -11,13 +11,17 @@ import (
 )
 
 type Querier interface {
+	CreateAccount(ctx context.Context, arg CreateAccountParams) (*Account, error)
 	CreateCategory(ctx context.Context, arg CreateCategoryParams) error
 	CreateToken(ctx context.Context, arg CreateTokenParams) (*Token, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (*User, error)
 	CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams) (*Workspace, error)
+	DeleteAccount(ctx context.Context, id uuid.UUID) error
 	DeleteCategoriesByWorkspace(ctx context.Context, workspaceID uuid.UUID) error
 	DeleteCategory(ctx context.Context, id uuid.UUID) error
 	DeleteTokenByID(ctx context.Context, id int32) error
+	GetAccountByID(ctx context.Context, id uuid.UUID) (*Account, error)
+	GetAccountsByWorkspace(ctx context.Context, workspaceID uuid.UUID) ([]*Account, error)
 	GetCategoriesByUser(ctx context.Context, userID uuid.UUID) ([]*Category, error)
 	GetCategoriesByWorkspace(ctx context.Context, workspaceID uuid.UUID) ([]*Category, error)
 	GetCategoryByID(ctx context.Context, id uuid.UUID) (*Category, error)
@@ -29,6 +33,7 @@ type Querier interface {
 	GetUsers(ctx context.Context) ([]*User, error)
 	GetWorkspacesByUser(ctx context.Context, arg GetWorkspacesByUserParams) ([]*Workspace, error)
 	IsEmailTaken(ctx context.Context, email string) (int32, error)
+	UpdateAccount(ctx context.Context, arg UpdateAccountParams) error
 	UpdateCategory(ctx context.Context, arg UpdateCategoryParams) error
 	UpdateToken(ctx context.Context, arg UpdateTokenParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (*User, error)

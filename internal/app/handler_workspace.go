@@ -2,11 +2,13 @@ package app
 
 import (
 	"context"
+	"math/big"
 	"net/http"
 
 	"github.com/go-chi/render"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/opchaves/go-chi-web-api/internal/app/auth/jwt"
 	"github.com/opchaves/go-chi-web-api/internal/model"
 	"github.com/opchaves/go-chi-web-api/pkg/pagination"
@@ -91,6 +93,12 @@ func (h *App) createWorkspace(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, ErrInternal)
 	}
 
+	err = createAccounts(r.Context(), qTx, workspace)
+	if err != nil {
+		oplog.Error("error creating accounts", err)
+		render.Render(w, r, ErrInternal)
+	}
+
 	_ = tx.Commit(r.Context())
 
 	render.Render(w, r, &createResponse{workspace})
@@ -108,6 +116,25 @@ func createCategories(ctx context.Context, db *model.Queries, workspace *model.W
 		c.WorkspaceID = workspace.ID
 		c.UserID = workspace.UserID
 		if err := db.CreateCategory(ctx, c); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func createAccounts(ctx context.Context, db *model.Queries, workspace *model.Workspace) error {
+	zero := &pgtype.Numeric{Int: big.NewInt(0), Exp: 0, Valid: true}
+
+	names := []model.CreateAccountParams{
+		{Name: "checking", Balance: *zero},
+		{Name: "savings", Balance: *zero},
+	}
+
+	for _, a := range names {
+		a.WorkspaceID = workspace.ID
+		a.UserID = workspace.UserID
+		if _, err := db.CreateAccount(ctx, a); err != nil {
 			return err
 		}
 	}
