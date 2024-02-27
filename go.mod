@@ -1,4 +1,4 @@
-module github.com/opchaves/go-chi-web-api
+module github.com/opchaves/go-kom
 
 go 1.22.0
 

@@ -3,9 +3,9 @@ package services
 import (
 	"context"
 
-	"github.com/opchaves/go-chi-web-api/internal/model"
-	"github.com/opchaves/go-chi-web-api/internal/stores"
-	"github.com/opchaves/go-chi-web-api/pkg/util"
+	"github.com/opchaves/go-kom/internal/model"
+	"github.com/opchaves/go-kom/internal/stores"
+	"github.com/opchaves/go-kom/pkg/util"
 )
 
 type (

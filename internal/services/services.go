@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/opchaves/go-chi-web-api/internal/stores"
+	"github.com/opchaves/go-kom/internal/stores"
 )
 
 type Services struct {

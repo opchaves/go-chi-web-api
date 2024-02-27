@@ -1,6 +1,7 @@
 package pwdless
 
 import (
+	"fmt"
 	"log/slog"
 	"net/http"
 	"path"
@@ -10,7 +11,7 @@ import (
 	"github.com/go-chi/render"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
-	"github.com/opchaves/go-chi-web-api/internal/app/email"
+	"github.com/opchaves/go-kom/internal/app/email"
 )
 
 type loginRequest struct {
@@ -39,6 +40,7 @@ func (rs *Resource) login(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, ErrUnauthorized(ErrInvalidLogin))
 		return
 	}
+	fmt.Println("login", body.Email)
 
 	user, err := rs.Q.GetUserByEmail(r.Context(), body.Email)
 	if err != nil {

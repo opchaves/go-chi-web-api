@@ -7,9 +7,9 @@ import (
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/opchaves/go-chi-web-api/internal/app/auth/jwt"
-	"github.com/opchaves/go-chi-web-api/internal/config"
-	"github.com/opchaves/go-chi-web-api/internal/model"
+	"github.com/opchaves/go-kom/internal/app/auth/jwt"
+	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/internal/model"
 )
 
 func (rs *Resource) refresh(w http.ResponseWriter, r *http.Request) {

@@ -5,9 +5,9 @@ import (
 	"log"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/opchaves/go-chi-web-api/internal/config"
-	"github.com/opchaves/go-chi-web-api/internal/model"
-	"github.com/opchaves/go-chi-web-api/pkg/password"
+	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/internal/model"
+	"github.com/opchaves/go-kom/pkg/password"
 )
 
 // TODO maybe use faker to generate random data

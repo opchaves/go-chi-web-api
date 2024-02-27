@@ -4,9 +4,9 @@ import (
 	"context"
 	"os"
 
-	"github.com/opchaves/go-chi-web-api/internal/app"
-	"github.com/opchaves/go-chi-web-api/internal/config"
-	"github.com/opchaves/go-chi-web-api/internal/server"
+	"github.com/opchaves/go-kom/internal/app"
+	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/internal/server"
 )
 
 func main() {

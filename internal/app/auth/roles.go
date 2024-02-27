@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
-	"github.com/opchaves/go-chi-web-api/internal/app/auth/jwt"
+	"github.com/opchaves/go-kom/internal/app/auth/jwt"
 )
 
 // RequiresRole middleware restricts access to accounts having role parameter in their jwt claims.

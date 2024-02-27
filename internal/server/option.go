@@ -8,9 +8,9 @@ import (
 
 	"github.com/go-chi/httplog/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/opchaves/go-chi-web-api/internal/config"
-	"github.com/opchaves/go-chi-web-api/internal/services"
-	"github.com/opchaves/go-chi-web-api/internal/stores"
+	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/internal/services"
+	"github.com/opchaves/go-kom/internal/stores"
 )
 
 // Allows to specify options to the server.

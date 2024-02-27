@@ -12,9 +12,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/mssola/useragent"
-	"github.com/opchaves/go-chi-web-api/internal/app/auth/jwt"
-	"github.com/opchaves/go-chi-web-api/internal/config"
-	"github.com/opchaves/go-chi-web-api/internal/model"
+	"github.com/opchaves/go-kom/internal/app/auth/jwt"
+	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/internal/model"
 )
 
 type tokenRequest struct {

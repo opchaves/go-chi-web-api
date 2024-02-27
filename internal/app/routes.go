@@ -11,11 +11,11 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/go-chi/httplog/v2"
 	"github.com/go-chi/render"
-	"github.com/opchaves/go-chi-web-api/internal/app/auth/jwt"
-	"github.com/opchaves/go-chi-web-api/internal/app/auth/pwdless"
-	"github.com/opchaves/go-chi-web-api/internal/config"
-	"github.com/opchaves/go-chi-web-api/internal/server"
-	"github.com/opchaves/go-chi-web-api/internal/web"
+	"github.com/opchaves/go-kom/internal/app/auth/jwt"
+	"github.com/opchaves/go-kom/internal/app/auth/pwdless"
+	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/internal/server"
+	"github.com/opchaves/go-kom/internal/web"
 )
 
 func AddRoutes(r *server.Server) error {
@@ -32,7 +32,7 @@ func AddRoutes(r *server.Server) error {
 	api := New(r.DB, r.Stores, r.Services)
 
 	// TODO: refactor pwdless to use services
-	authResource, err := pwdless.NewResource(r.DB, r.Q)
+	authResource, err := pwdless.NewResource(api.DB, api.Q)
 
 	if err != nil {
 		return err

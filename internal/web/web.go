@@ -10,7 +10,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/opchaves/go-chi-web-api/internal/config"
+	"github.com/opchaves/go-kom/internal/config"
 )
 
 var (

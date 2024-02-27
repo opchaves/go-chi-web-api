@@ -6,9 +6,9 @@ import (
 	"github.com/go-chi/render"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
-	"github.com/opchaves/go-chi-web-api/internal/app/auth/jwt"
-	"github.com/opchaves/go-chi-web-api/internal/model"
-	"github.com/opchaves/go-chi-web-api/pkg/pagination"
+	"github.com/opchaves/go-kom/internal/app/auth/jwt"
+	"github.com/opchaves/go-kom/internal/model"
+	"github.com/opchaves/go-kom/pkg/pagination"
 )
 
 type createResponse struct {

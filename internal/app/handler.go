@@ -6,9 +6,9 @@ import (
 
 	"github.com/go-chi/httplog/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/opchaves/go-chi-web-api/internal/model"
-	"github.com/opchaves/go-chi-web-api/internal/services"
-	"github.com/opchaves/go-chi-web-api/internal/stores"
+	"github.com/opchaves/go-kom/internal/model"
+	"github.com/opchaves/go-kom/internal/services"
+	"github.com/opchaves/go-kom/internal/stores"
 )
 
 type App struct {

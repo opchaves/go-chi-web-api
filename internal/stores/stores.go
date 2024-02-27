@@ -2,7 +2,7 @@ package stores
 
 import (
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/opchaves/go-chi-web-api/internal/model"
+	"github.com/opchaves/go-kom/internal/model"
 )
 
 type Stores struct {
