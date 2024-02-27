@@ -37,6 +37,7 @@ type Querier interface {
 	UpdateCategory(ctx context.Context, arg UpdateCategoryParams) error
 	UpdateToken(ctx context.Context, arg UpdateTokenParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (*User, error)
+	UpdateWorkspace(ctx context.Context, arg UpdateWorkspaceParams) (*Workspace, error)
 }
 
 var _ Querier = (*Queries)(nil)

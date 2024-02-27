@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
@@ -37,14 +38,15 @@ func (body *tokenRequest) Bind(r *http.Request) error {
 func (rs *Resource) token(w http.ResponseWriter, r *http.Request) {
 	oplog := log(r)
 
-	body := &tokenRequest{}
-	if err := render.Bind(r, body); err != nil {
-		oplog.Warn(err.Error())
+	// TODO: regex for token in path
+	token := chi.URLParam(r, "token")
+
+	if token == "" {
 		render.Render(w, r, ErrUnauthorized(ErrLoginToken))
 		return
 	}
 
-	sId, err := rs.LoginAuth.GetAccountID(body.Token)
+	sId, err := rs.LoginAuth.GetAccountID(token)
 	if err != nil {
 		render.Render(w, r, ErrUnauthorized(ErrLoginToken))
 		return
@@ -71,7 +73,7 @@ func (rs *Resource) token(w http.ResponseWriter, r *http.Request) {
 	expiresAt.Scan(time.Now().Add(config.JwtRefreshExpiry))
 	identifier := fmt.Sprintf("%s on %s", browser, ua.OS())
 
-	token := model.CreateTokenParams{
+	aToken := model.CreateTokenParams{
 		Token:      uuid.Must(uuid.NewRandom()).String(),
 		ExpiresAt:  expiresAt,
 		Mobile:     ua.Mobile(),
@@ -79,7 +81,7 @@ func (rs *Resource) token(w http.ResponseWriter, r *http.Request) {
 		Identifier: &identifier,
 	}
 
-	newToken, err := rs.Q.CreateToken(r.Context(), token)
+	newToken, err := rs.Q.CreateToken(r.Context(), aToken)
 	if err != nil {
 		oplog.With("user", user.ID).Error(err.Error())
 		render.Render(w, r, ErrInternalServerError)

@@ -47,6 +47,7 @@ func AddRoutes(r *server.Server) error {
 
 			r.Get("/workspaces", api.getWorkspace)
 			r.Post("/workspaces", api.createWorkspace)
+			r.Put("/workspaces/{workspaceID}", api.updateWorkspace)
 		})
 	})
 

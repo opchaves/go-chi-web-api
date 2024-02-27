@@ -9,3 +9,11 @@ INSERT INTO workspaces (
   language,
   user_id
 ) VALUES ($1, $2, $3, $4, $5) RETURNING *;
+
+-- name: UpdateWorkspace :one
+UPDATE workspaces SET
+  name = coalesce(sqlc.narg('name'), name),
+  description = coalesce(sqlc.narg('description'), description),
+  currency = coalesce(sqlc.narg('currency'), currency),
+  language = coalesce(sqlc.narg('language'), language)
+WHERE id = sqlc.arg('id') and user_id = sqlc.arg('user_id') RETURNING *;

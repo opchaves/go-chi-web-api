@@ -89,3 +89,44 @@ func (q *Queries) GetWorkspacesByUser(ctx context.Context, arg GetWorkspacesByUs
 	}
 	return items, nil
 }
+
+const updateWorkspace = `-- name: UpdateWorkspace :one
+UPDATE workspaces SET
+  name = coalesce($1, name),
+  description = coalesce($2, description),
+  currency = coalesce($3, currency),
+  language = coalesce($4, language)
+WHERE id = $5 and user_id = $6 RETURNING id, name, description, currency, language, user_id, created_at, updated_at
+`
+
+type UpdateWorkspaceParams struct {
+	Name        *string   `json:"name"`
+	Description *string   `json:"description"`
+	Currency    *string   `json:"currency"`
+	Language    *string   `json:"language"`
+	ID          uuid.UUID `json:"id"`
+	UserID      uuid.UUID `json:"user_id"`
+}
+
+func (q *Queries) UpdateWorkspace(ctx context.Context, arg UpdateWorkspaceParams) (*Workspace, error) {
+	row := q.db.QueryRow(ctx, updateWorkspace,
+		arg.Name,
+		arg.Description,
+		arg.Currency,
+		arg.Language,
+		arg.ID,
+		arg.UserID,
+	)
+	var i Workspace
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Currency,
+		&i.Language,
+		&i.UserID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return &i, err
+}

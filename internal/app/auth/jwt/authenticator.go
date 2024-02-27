@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/httplog/v2"
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	"github.com/lestrrat-go/jwx/v2/jwt"
 	"github.com/opchaves/go-kom/internal/config"
 )
@@ -15,6 +16,12 @@ import (
 // ClaimsFromCtx retrieves the parsed AppClaims from request context.
 func ClaimsFromCtx(ctx context.Context) AppClaims {
 	return ctx.Value(config.CtxClaims).(AppClaims)
+}
+
+// UserIDFromCtx retrieves the user ID from the parsed AppClaims in request context.
+func UserIDFromCtx(ctx context.Context) uuid.UUID {
+	claims := ClaimsFromCtx(ctx)
+	return uuid.MustParse(claims.ID)
 }
 
 // RefreshTokenFromCtx retrieves the parsed refresh token from context.

@@ -2,7 +2,9 @@ package app
 
 import (
 	"net/http"
+	"strings"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
@@ -66,13 +68,46 @@ func (h *App) createWorkspace(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	claims := jwt.ClaimsFromCtx(r.Context())
-	input.UserID = uuid.MustParse(claims.ID)
+	input.UserID = jwt.UserIDFromCtx(r.Context())
 
 	workspace, err := h.Services.Workspace.Create(r.Context(), input.CreateWorkspaceParams)
 
 	if err != nil {
 		oplog.Error("error creating workspace", err)
+		render.Render(w, r, ErrRender(err))
+		return
+	}
+	render.Render(w, r, &createResponse{workspace})
+}
+
+type updateInput struct {
+	*model.UpdateWorkspaceParams
+}
+
+func (a *updateInput) Bind(r *http.Request) error {
+	return validation.ValidateStruct(a,
+		validation.Field(&a.Name, validation.Required),
+		validation.Field(&a.Currency, validation.In("BRL", "USD", "EUR")),
+		validation.Field(&a.Language, validation.In("pt-br", "en-us")),
+	)
+}
+
+func (h *App) updateWorkspace(w http.ResponseWriter, r *http.Request) {
+	oplog := log(r)
+	oplog.Info("update workspace")
+
+	input := &updateInput{}
+	if err := render.Bind(r, input); err != nil {
+		render.Render(w, r, ErrRender(err))
+		return
+	}
+
+	input.ID = uuid.MustParse(chi.URLParam(r, "workspaceID"))
+	input.UserID = jwt.UserIDFromCtx(r.Context())
+
+	workspace, err := h.Q.UpdateWorkspace(r.Context(), *input.UpdateWorkspaceParams)
+	if err != nil {
+		oplog.Error("error updating workspace", err)
 		render.Render(w, r, ErrRender(err))
 		return
 	}
