@@ -8,6 +8,8 @@ import (
 	"github.com/go-chi/httplog/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/opchaves/go-chi-web-api/internal/model"
+	"github.com/opchaves/go-chi-web-api/internal/services"
+	"github.com/opchaves/go-chi-web-api/internal/stores"
 )
 
 type Server struct {
@@ -17,9 +19,11 @@ type Server struct {
 	host string
 	port string
 
-	Logger *httplog.Logger
-	DB     *pgxpool.Pool
-	Q      *model.Queries
+	Logger   *httplog.Logger
+	DB       *pgxpool.Pool
+	Q        *model.Queries
+	Stores   *stores.Stores
+	Services *services.Services
 }
 
 func (s *Server) Run() error {

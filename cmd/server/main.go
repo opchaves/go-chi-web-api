@@ -18,6 +18,8 @@ func main() {
 		server.UsePort(config.Port),
 		server.UseLogger(),
 		server.UseDB(ctx),
+		server.UseStores(),
+		server.UseServices(),
 	)
 
 	defer s.DB.Close()

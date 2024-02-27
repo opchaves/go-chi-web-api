@@ -7,17 +7,23 @@ import (
 	"github.com/go-chi/httplog/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/opchaves/go-chi-web-api/internal/model"
+	"github.com/opchaves/go-chi-web-api/internal/services"
+	"github.com/opchaves/go-chi-web-api/internal/stores"
 )
 
 type App struct {
-	DB *pgxpool.Pool
-	Q  *model.Queries
+	DB       *pgxpool.Pool
+	Q        *model.Queries
+	Stores   *stores.Stores
+	Services *services.Services
 }
 
-func New(db *pgxpool.Pool) *App {
+func New(db *pgxpool.Pool, stores *stores.Stores, servs *services.Services) *App {
 	return &App{
-		DB: db,
-		Q:  model.New(db),
+		DB:       db,
+		Q:        model.New(db),
+		Stores:   stores,
+		Services: servs,
 	}
 }
 

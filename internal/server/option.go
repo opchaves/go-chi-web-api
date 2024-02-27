@@ -9,7 +9,8 @@ import (
 	"github.com/go-chi/httplog/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/opchaves/go-chi-web-api/internal/config"
-	"github.com/opchaves/go-chi-web-api/internal/model"
+	"github.com/opchaves/go-chi-web-api/internal/services"
+	"github.com/opchaves/go-chi-web-api/internal/stores"
 )
 
 // Allows to specify options to the server.
@@ -66,6 +67,17 @@ func UseDB(ctx context.Context) Option {
 		s.Logger.DebugContext(ctx, "Database successfully connected.")
 
 		s.DB = db
-		s.Q = model.New(db)
+	}
+}
+
+func UseStores() Option {
+	return func(s *Server) {
+		s.Stores = stores.New(s.DB)
+	}
+}
+
+func UseServices() Option {
+	return func(s *Server) {
+		s.Services = services.New(s.Stores)
 	}
 }

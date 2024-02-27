@@ -29,8 +29,9 @@ func AddRoutes(r *server.Server) error {
 		r.Use(corsConfig().Handler)
 	}
 
-	api := New(r.DB)
+	api := New(r.DB, r.Stores, r.Services)
 
+	// TODO: refactor pwdless to use services
 	authResource, err := pwdless.NewResource(r.DB, r.Q)
 
 	if err != nil {
