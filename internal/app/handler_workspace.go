@@ -112,3 +112,21 @@ func (h *App) updateWorkspace(w http.ResponseWriter, r *http.Request) {
 	}
 	render.Render(w, r, &createResponse{workspace})
 }
+
+func (h *App) deleteWorkspace(w http.ResponseWriter, r *http.Request) {
+	oplog := log(r)
+	oplog.Info("delete workspace")
+
+	input := model.DeleteWorkspaceParams{
+		ID:     uuid.MustParse(chi.URLParam(r, "workspaceID")),
+		UserID: jwt.UserIDFromCtx(r.Context()),
+	}
+
+	err := h.Q.DeleteWorkspace(r.Context(), input)
+	if err != nil {
+		oplog.Error("error deleting workspace", err)
+		render.Render(w, r, ErrRender(err))
+		return
+	}
+	render.NoContent(w, r)
+}

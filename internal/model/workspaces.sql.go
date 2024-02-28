@@ -18,7 +18,7 @@ INSERT INTO workspaces (
   currency,
   language,
   user_id
-) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, description, currency, language, user_id, created_at, updated_at
+) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, description, currency, language, user_id, created_at, updated_at, deleted_at
 `
 
 type CreateWorkspaceParams struct {
@@ -47,12 +47,27 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 		&i.UserID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return &i, err
 }
 
+const deleteWorkspace = `-- name: DeleteWorkspace :exec
+UPDATE workspaces SET deleted_at = now() WHERE id = $1 and user_id = $2
+`
+
+type DeleteWorkspaceParams struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"user_id"`
+}
+
+func (q *Queries) DeleteWorkspace(ctx context.Context, arg DeleteWorkspaceParams) error {
+	_, err := q.db.Exec(ctx, deleteWorkspace, arg.ID, arg.UserID)
+	return err
+}
+
 const getWorkspacesByUser = `-- name: GetWorkspacesByUser :many
-SELECT id, name, description, currency, language, user_id, created_at, updated_at FROM workspaces WHERE user_id = $1 LIMIT $2 OFFSET $3
+SELECT id, name, description, currency, language, user_id, created_at, updated_at, deleted_at FROM workspaces WHERE user_id = $1 and deleted_at IS NULL LIMIT $2 OFFSET $3
 `
 
 type GetWorkspacesByUserParams struct {
@@ -79,6 +94,7 @@ func (q *Queries) GetWorkspacesByUser(ctx context.Context, arg GetWorkspacesByUs
 			&i.UserID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.DeletedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -96,7 +112,7 @@ UPDATE workspaces SET
   description = coalesce($2, description),
   currency = coalesce($3, currency),
   language = coalesce($4, language)
-WHERE id = $5 and user_id = $6 RETURNING id, name, description, currency, language, user_id, created_at, updated_at
+WHERE id = $5 and user_id = $6 RETURNING id, name, description, currency, language, user_id, created_at, updated_at, deleted_at
 `
 
 type UpdateWorkspaceParams struct {
@@ -127,6 +143,7 @@ func (q *Queries) UpdateWorkspace(ctx context.Context, arg UpdateWorkspaceParams
 		&i.UserID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return &i, err
 }

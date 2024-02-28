@@ -1,5 +1,5 @@
 -- name: GetWorkspacesByUser :many
-SELECT * FROM workspaces WHERE user_id = $1 LIMIT $2 OFFSET $3;
+SELECT * FROM workspaces WHERE user_id = $1 and deleted_at IS NULL LIMIT $2 OFFSET $3;
 
 -- name: CreateWorkspace :one
 INSERT INTO workspaces (
@@ -17,3 +17,6 @@ UPDATE workspaces SET
   currency = coalesce(sqlc.narg('currency'), currency),
   language = coalesce(sqlc.narg('language'), language)
 WHERE id = sqlc.arg('id') and user_id = sqlc.arg('user_id') RETURNING *;
+
+-- name: DeleteWorkspace :exec
+UPDATE workspaces SET deleted_at = now() WHERE id = $1 and user_id = $2;

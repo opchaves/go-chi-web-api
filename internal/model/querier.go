@@ -20,6 +20,7 @@ type Querier interface {
 	DeleteCategoriesByWorkspace(ctx context.Context, workspaceID uuid.UUID) error
 	DeleteCategory(ctx context.Context, id uuid.UUID) error
 	DeleteTokenByID(ctx context.Context, id int32) error
+	DeleteWorkspace(ctx context.Context, arg DeleteWorkspaceParams) error
 	GetAccountByID(ctx context.Context, id uuid.UUID) (*Account, error)
 	GetAccountsByWorkspace(ctx context.Context, workspaceID uuid.UUID) ([]*Account, error)
 	GetCategoriesByUser(ctx context.Context, userID uuid.UUID) ([]*Category, error)
