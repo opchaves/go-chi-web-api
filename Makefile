@@ -119,7 +119,7 @@ sqlc:
 	else \
 	  read -p "Go's 'sqlc' is not installed on your machine. Do you want to install it? [Y/n] " choice; \
 	  if [ "$$choice" != "n" ] && [ "$$choice" != "N" ]; then \
-			go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest \
+			go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest; \
 	  	echo "Gerating Go code...";\
 	  	sqlc generate; \
 	  else \
