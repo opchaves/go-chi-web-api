@@ -32,6 +32,11 @@ type Category struct {
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
 }
 
+type SchemaMigration struct {
+	Version int64 `json:"version"`
+	Dirty   bool  `json:"dirty"`
+}
+
 type Token struct {
 	ID         int32            `json:"id"`
 	Token      string           `json:"token"`
@@ -41,6 +46,22 @@ type Token struct {
 	ExpiresAt  pgtype.Timestamp `json:"expires_at"`
 	CreatedAt  pgtype.Timestamp `json:"created_at"`
 	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
+}
+
+type Transaction struct {
+	ID          uuid.UUID        `json:"id"`
+	Title       string           `json:"title"`
+	Note        *string          `json:"note"`
+	Amount      pgtype.Numeric   `json:"amount"`
+	Paid        bool             `json:"paid"`
+	TType       string           `json:"t_type"`
+	WorkspaceID uuid.UUID        `json:"workspace_id"`
+	UserID      uuid.UUID        `json:"user_id"`
+	CategoryID  uuid.UUID        `json:"category_id"`
+	AccountID   uuid.UUID        `json:"account_id"`
+	HandledAt   pgtype.Timestamp `json:"handled_at"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
 }
 
 type User struct {

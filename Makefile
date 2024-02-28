@@ -62,6 +62,9 @@ docker-run: withEnv
 db-sh: withEnv
 	@docker compose exec postgres psql -U postgres -d app_dev
 
+db-schema-dump: withEnv
+	@docker compose exec postgres pg_dump -U postgres --schema-only -d app_dev > db/schema.sql
+
 seed: withEnv
 	@go run ./cmd/seed/main.go
 

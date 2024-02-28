@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS transactions(
+  "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+  "title" VARCHAR NOT NULL,
+  "note" VARCHAR,
+  "amount" DECIMAL(10, 2) NOT NULL DEFAULT 0,
+  "paid" BOOLEAN NOT NULL DEFAULT false,
+  "t_type" VARCHAR NOT NULL,
+  "workspace_id" UUID NOT NULL,
+  "user_id" UUID NOT NULL,
+  "category_id" UUID NOT NULL,
+  "account_id" UUID NOT NULL,
+  "handled_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  "created_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  "updated_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  CONSTRAINT "pk_transactions_id" PRIMARY KEY ("id"),
+  CONSTRAINT "fk_transactions_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT "fk_transactions_workspace_id" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT "fk_transactions_category_id" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT "fk_transactions_account_id" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+);
