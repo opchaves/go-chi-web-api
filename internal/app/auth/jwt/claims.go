@@ -14,6 +14,7 @@ type CommonClaims struct {
 // AppClaims represent the claims parsed from JWT access token.
 type AppClaims struct {
 	ID    string   `json:"id,omitempty"`
+	OrgID string   `json:"org_id,omitempty"`
 	Sub   string   `json:"sub,omitempty"`
 	Roles []string `json:"roles,omitempty"`
 	CommonClaims
@@ -26,6 +27,12 @@ func (c *AppClaims) ParseClaims(claims map[string]interface{}) error {
 		return errors.New("could not parse claim id")
 	}
 	c.ID = id.(string)
+
+	orgId, ok := claims["org_id"]
+	if !ok {
+		return errors.New("could not parse claim org id")
+	}
+	c.OrgID = orgId.(string)
 
 	sub, ok := claims[jwt.SubjectKey]
 	if !ok {

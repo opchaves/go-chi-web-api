@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createWorkspace = `-- name: CreateWorkspace :one
@@ -52,6 +53,33 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 	return &i, err
 }
 
+const createWorkspaceUser = `-- name: CreateWorkspaceUser :one
+INSERT INTO workspaces_users (
+  user_id,
+  workspace_id,
+  role
+) VALUES ($1, $2, $3) RETURNING workspace_id, user_id, role, created_at, updated_at
+`
+
+type CreateWorkspaceUserParams struct {
+	UserID      uuid.UUID `json:"user_id"`
+	WorkspaceID uuid.UUID `json:"workspace_id"`
+	Role        string    `json:"role"`
+}
+
+func (q *Queries) CreateWorkspaceUser(ctx context.Context, arg CreateWorkspaceUserParams) (*WorkspacesUser, error) {
+	row := q.db.QueryRow(ctx, createWorkspaceUser, arg.UserID, arg.WorkspaceID, arg.Role)
+	var i WorkspacesUser
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.UserID,
+		&i.Role,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return &i, err
+}
+
 const deleteWorkspace = `-- name: DeleteWorkspace :exec
 UPDATE workspaces SET deleted_at = now() WHERE id = $1 and user_id = $2
 `
@@ -64,6 +92,62 @@ type DeleteWorkspaceParams struct {
 func (q *Queries) DeleteWorkspace(ctx context.Context, arg DeleteWorkspaceParams) error {
 	_, err := q.db.Exec(ctx, deleteWorkspace, arg.ID, arg.UserID)
 	return err
+}
+
+const getDefaultUserWorkspace = `-- name: GetDefaultUserWorkspace :one
+SELECT
+  users.id, users.first_name, users.last_name, users.email, users.password, users.verified, users.verification_token, users.avatar, users.created_at, users.updated_at,
+  wu.role,
+  wu.workspace_id,
+  workspaces.name as workspace_name,
+  workspaces.currency as workspace_currency,
+  workspaces.language as workspace_language
+FROM users
+JOIN workspaces_users as wu ON users.id = wu.user_id
+JOIN workspaces ON wu.workspace_id = workspaces.id
+WHERE users.id = $1
+LIMIT 1
+`
+
+type GetDefaultUserWorkspaceRow struct {
+	ID                uuid.UUID        `json:"id"`
+	FirstName         string           `json:"first_name"`
+	LastName          string           `json:"last_name"`
+	Email             string           `json:"email"`
+	Password          string           `json:"password"`
+	Verified          bool             `json:"verified"`
+	VerificationToken *string          `json:"verification_token"`
+	Avatar            string           `json:"avatar"`
+	CreatedAt         pgtype.Timestamp `json:"created_at"`
+	UpdatedAt         pgtype.Timestamp `json:"updated_at"`
+	Role              string           `json:"role"`
+	WorkspaceID       uuid.UUID        `json:"workspace_id"`
+	WorkspaceName     string           `json:"workspace_name"`
+	WorkspaceCurrency string           `json:"workspace_currency"`
+	WorkspaceLanguage string           `json:"workspace_language"`
+}
+
+func (q *Queries) GetDefaultUserWorkspace(ctx context.Context, id uuid.UUID) (*GetDefaultUserWorkspaceRow, error) {
+	row := q.db.QueryRow(ctx, getDefaultUserWorkspace, id)
+	var i GetDefaultUserWorkspaceRow
+	err := row.Scan(
+		&i.ID,
+		&i.FirstName,
+		&i.LastName,
+		&i.Email,
+		&i.Password,
+		&i.Verified,
+		&i.VerificationToken,
+		&i.Avatar,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Role,
+		&i.WorkspaceID,
+		&i.WorkspaceName,
+		&i.WorkspaceCurrency,
+		&i.WorkspaceLanguage,
+	)
+	return &i, err
 }
 
 const getWorkspacesByUser = `-- name: GetWorkspacesByUser :many

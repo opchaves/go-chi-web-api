@@ -23,6 +23,41 @@ func main() {
 	defer db.Close()
 	query := model.New(db)
 
+	_, err = db.Exec(ctx, "DELETE FROM transactions")
+	if err != nil {
+		log.Fatalf("Unable to delete transactions: %v\n", err)
+	}
+
+	_, err = db.Exec(ctx, "DELETE FROM categories")
+	if err != nil {
+		log.Fatalf("Unable to delete categories: %v\n", err)
+	}
+
+	_, err = db.Exec(ctx, "DELETE FROM accounts")
+	if err != nil {
+		log.Fatalf("Unable to delete accounts: %v\n", err)
+	}
+
+	_, err = db.Exec(ctx, "DELETE FROM workspaces_users")
+	if err != nil {
+		log.Fatalf("Unable to delete workspaces_users: %v\n", err)
+	}
+
+	_, err = db.Exec(ctx, "DELETE FROM workspaces")
+	if err != nil {
+		log.Fatalf("Unable to delete workspaces: %v\n", err)
+	}
+
+	_, err = db.Exec(ctx, "DELETE FROM tokens")
+	if err != nil {
+		log.Fatalf("Unable to delete tokens: %v\n", err)
+	}
+
+	_, err = db.Exec(ctx, "DELETE FROM users")
+	if err != nil {
+		log.Fatalf("Unable to delete users: %v\n", err)
+	}
+
 	password, _ := password.Hash("password12")
 
 	userParams := model.CreateUserParams{
@@ -41,21 +76,6 @@ func main() {
 		Password:  password,
 		Verified:  true,
 		Avatar:    "https://example.com/avatar.jpg",
-	}
-
-	_, err = db.Exec(ctx, "DELETE FROM workspaces")
-	if err != nil {
-		log.Fatalf("Unable to delete workspaces: %v\n", err)
-	}
-
-	_, err = db.Exec(ctx, "DELETE FROM tokens")
-	if err != nil {
-		log.Fatalf("Unable to delete tokens: %v\n", err)
-	}
-
-	_, err = db.Exec(ctx, "DELETE FROM users")
-	if err != nil {
-		log.Fatalf("Unable to delete users: %v\n", err)
 	}
 
 	user, err := query.CreateUser(ctx, userParams)
@@ -85,14 +105,36 @@ func main() {
 		Description: &description,
 	}
 
-	_, err = query.CreateWorkspace(ctx, workspaceParams)
+	workspace1, err := query.CreateWorkspace(ctx, workspaceParams)
 	if err != nil {
 		log.Fatalf("Unable to create workspace: %v\n", err)
 	}
 
-	_, err = query.CreateWorkspace(ctx, workspace2Params)
+	workspace2, err := query.CreateWorkspace(ctx, workspace2Params)
 	if err != nil {
 		log.Fatalf("Unable to create workspace: %v\n", err)
+	}
+
+	workspaceUser1Params := model.CreateWorkspaceUserParams{
+		UserID:      user.ID,
+		WorkspaceID: workspace1.ID,
+		Role:        "admin",
+	}
+
+	workspaceUser2Params := model.CreateWorkspaceUserParams{
+		UserID:      user2.ID,
+		WorkspaceID: workspace2.ID,
+		Role:        "admin",
+	}
+
+	_, err = query.CreateWorkspaceUser(ctx, workspaceUser1Params)
+	if err != nil {
+		log.Fatalf("Unable to create workspace user: %v\n", err)
+	}
+
+	_, err = query.CreateWorkspaceUser(ctx, workspaceUser2Params)
+	if err != nil {
+		log.Fatalf("Unable to create workspace user 2: %v\n", err)
 	}
 
 	log.Println("Seeding completed successfully!")

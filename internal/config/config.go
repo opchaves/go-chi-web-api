@@ -24,8 +24,8 @@ var (
 	DatabaseURL  = getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/app_dev?sslmode=disable")
 
 	JwtSecret        = getEnv("JWT_SECRET", "superSecret")
-	JwtExpiry        = toDuration("JWT_EXPIRY", "15m")
-	JwtRefreshExpiry = toDuration("JWT_REFRESH_EXPIRY", "1h")
+	JwtExpiry        = toDuration("JWT_EXPIRY", "1h")
+	JwtRefreshExpiry = toDuration("JWT_REFRESH_EXPIRY", "72h")
 
 	LoginTokenURL    = getEnv("LOGIN_TOKEN_URL", "http://localhost:8080/auth/token")
 	LoginTokenLength = toInt("LOGIN_TOKEN_LENGTH", "16")

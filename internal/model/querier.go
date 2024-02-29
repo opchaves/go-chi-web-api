@@ -17,6 +17,7 @@ type Querier interface {
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (*Transaction, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (*User, error)
 	CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams) (*Workspace, error)
+	CreateWorkspaceUser(ctx context.Context, arg CreateWorkspaceUserParams) (*WorkspacesUser, error)
 	DeleteAccount(ctx context.Context, id uuid.UUID) error
 	DeleteCategoriesByWorkspace(ctx context.Context, workspaceID uuid.UUID) error
 	DeleteCategory(ctx context.Context, id uuid.UUID) error
@@ -28,6 +29,7 @@ type Querier interface {
 	GetCategoriesByUser(ctx context.Context, userID uuid.UUID) ([]*Category, error)
 	GetCategoriesByWorkspace(ctx context.Context, workspaceID uuid.UUID) ([]*Category, error)
 	GetCategoryByID(ctx context.Context, id uuid.UUID) (*Category, error)
+	GetDefaultUserWorkspace(ctx context.Context, id uuid.UUID) (*GetDefaultUserWorkspaceRow, error)
 	GetToken(ctx context.Context, token string) (*Token, error)
 	GetTokenById(ctx context.Context, id int32) (*Token, error)
 	GetTokensByUser(ctx context.Context, userID uuid.UUID) ([]*Token, error)

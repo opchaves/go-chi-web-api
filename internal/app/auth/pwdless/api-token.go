@@ -54,17 +54,19 @@ func (rs *Resource) token(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(sId)
 
-	user, err := rs.Q.GetUserById(r.Context(), id)
+	// user, err := rs.Q.GetUserById(r.Context(), id)
+	user, err := rs.Q.GetDefaultUserWorkspace(r.Context(), id)
 	if err != nil {
 		// account deleted before login token expired
 		render.Render(w, r, ErrUnauthorized(ErrUnknownLogin))
 		return
 	}
 
-	if !user.CanLogin() {
-		render.Render(w, r, ErrUnauthorized(ErrLoginDisabled))
-		return
-	}
+	// TODO: check if user is active
+	// if !user.CanLogin() {
+	// 	render.Render(w, r, ErrUnauthorized(ErrLoginDisabled))
+	// 	return
+	// }
 
 	ua := useragent.New(r.UserAgent())
 	browser, _ := ua.Browser()
@@ -90,6 +92,7 @@ func (rs *Resource) token(w http.ResponseWriter, r *http.Request) {
 
 	claims := jwt.AppClaims{
 		ID:    user.ID.String(),
+		OrgID: user.WorkspaceID.String(),
 		Sub:   user.FirstName,
 		Roles: []string{"user"},
 	}

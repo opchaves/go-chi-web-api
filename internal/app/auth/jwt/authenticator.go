@@ -24,6 +24,11 @@ func UserIDFromCtx(ctx context.Context) uuid.UUID {
 	return uuid.MustParse(claims.ID)
 }
 
+func WorkspaceIDFromCtx(ctx context.Context) uuid.UUID {
+	claims := ClaimsFromCtx(ctx)
+	return uuid.MustParse(claims.OrgID)
+}
+
 // RefreshTokenFromCtx retrieves the parsed refresh token from context.
 func RefreshTokenFromCtx(ctx context.Context) string {
 	return ctx.Value(config.CtxRefreshToken).(string)
