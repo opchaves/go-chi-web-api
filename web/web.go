@@ -13,11 +13,13 @@ import (
 	"github.com/opchaves/go-kom/config"
 )
 
+// TODO use file server implementation from chi examples
+
 var (
-	//go:embed all:build
+	//go:embed all:dist
 	assets embed.FS
 
-	assetsDir = "build"
+	assetsDir = "dist"
 	errDir    = errors.New("path is dir")
 	maxAge    = 604800 // 7 days
 )

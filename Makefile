@@ -26,8 +26,7 @@ tidy:
 
 build:
 	@make build-web
-	@cp -r ./web/dist/* ./internal/web/build/
-	make build-api
+	@make build-api
 	@echo "Done!"
 
 build-api:
