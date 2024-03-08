@@ -14,7 +14,7 @@ import (
 
 	"github.com/go-mail/mail"
 	"github.com/jaytaylor/html2text"
-	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/config"
 	"github.com/vanng822/go-premailer/premailer"
 )
 

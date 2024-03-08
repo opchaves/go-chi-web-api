@@ -10,7 +10,7 @@ import (
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
 	"github.com/lestrrat-go/jwx/v2/jwt"
-	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/config"
 )
 
 // ClaimsFromCtx retrieves the parsed AppClaims from request context.

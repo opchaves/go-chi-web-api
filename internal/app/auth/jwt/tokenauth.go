@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/go-chi/jwtauth/v5"
-	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/config"
 )
 
 // TokenAuth implements JWT authentication flow.

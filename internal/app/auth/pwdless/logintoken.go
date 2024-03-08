@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/config"
 )
 
 var (

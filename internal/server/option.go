@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-chi/httplog/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/config"
 	"github.com/opchaves/go-kom/internal/services"
 	"github.com/opchaves/go-kom/internal/stores"
 )

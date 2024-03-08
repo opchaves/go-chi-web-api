@@ -10,7 +10,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/config"
 )
 
 var (

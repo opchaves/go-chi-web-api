@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/opchaves/go-kom/internal/app"
-	"github.com/opchaves/go-kom/internal/config"
+	"github.com/opchaves/go-kom/config"
 	"github.com/opchaves/go-kom/internal/server"
 )
 
