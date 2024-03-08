@@ -12,6 +12,14 @@ import (
 
 var doOnce sync.Once
 
+type ctxKey int
+
+const (
+	CtxClaims ctxKey = iota
+	CtxRefreshToken
+	CtxVersion
+)
+
 var (
 	Name    = getEnv("APP_NAME", "kommonei")
 	Env     = getEnv("APP_ENV", "development")
