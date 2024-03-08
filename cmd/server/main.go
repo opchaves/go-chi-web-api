@@ -6,7 +6,7 @@ import (
 
 	"github.com/opchaves/go-kom/internal/app"
 	"github.com/opchaves/go-kom/config"
-	"github.com/opchaves/go-kom/internal/server"
+	"github.com/opchaves/go-kom/server"
 )
 
 func main() {

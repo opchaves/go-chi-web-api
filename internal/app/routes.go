@@ -14,7 +14,7 @@ import (
 	"github.com/opchaves/go-kom/internal/app/auth/jwt"
 	"github.com/opchaves/go-kom/internal/app/auth/pwdless"
 	"github.com/opchaves/go-kom/config"
-	"github.com/opchaves/go-kom/internal/server"
+	"github.com/opchaves/go-kom/server"
 	"github.com/opchaves/go-kom/internal/web"
 )
 
