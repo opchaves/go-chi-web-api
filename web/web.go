@@ -2,77 +2,58 @@ package web
 
 import (
 	"embed"
-	"errors"
-	"fmt"
-	"io"
-	"mime"
+	"io/fs"
 	"net/http"
-	"path"
+	"os"
+	"path/filepath"
 	"strings"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/opchaves/go-kom/config"
 )
 
 // TODO use file server implementation from chi examples
 
 var (
-	//go:embed all:dist
-	assets embed.FS
-
-	assetsDir = "dist"
-	errDir    = errors.New("path is dir")
-	maxAge    = 604800 // 7 days
+	//go:embed all:dist/*
+	assetsFS embed.FS
+	// errDir    = errors.New("path is dir")
+	// maxAge    = 604800 // 7 days
 )
 
-func WebHandler(w http.ResponseWriter, r *http.Request) {
-	if strings.HasSuffix(r.URL.Path, "index.html") {
-		newPath := strings.TrimSuffix(r.URL.Path, "index.html")
-		http.Redirect(w, r, newPath, http.StatusMovedPermanently)
-		return
+// FileServer conveniently sets up a http.FileServer handler to serve
+// static files from a http.FileSystem.
+func FileServer(r chi.Router, path string) {
+	root := getFileSystem()
+
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit any URL parameters.")
 	}
 
-	// try serving an assets
-	err := readFile(r.URL.Path, w)
-	if err == nil {
-		return
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
 	}
+	path += "*"
 
-	reqPath := ""
-	if err != nil {
-		if err != errDir {
-			_ = readFile("index.html", w)
-			return
-		}
-		if r.URL.Path != "/" {
-			reqPath = r.URL.Path
-		}
-	}
-	reqPath = path.Join(reqPath, "index.html")
-
-	_ = readFile(reqPath, w)
+	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
+		rctx := chi.RouteContext(r.Context())
+		pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
+		fs := http.StripPrefix(pathPrefix, http.FileServer(root))
+		fs.ServeHTTP(w, r)
+	})
 }
 
-func readFile(reqPath string, w http.ResponseWriter) error {
-	pathname := path.Join(assetsDir, reqPath)
-	f, err := assets.Open(pathname)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	stat, _ := f.Stat()
-	if stat.IsDir() {
-		return errDir
-	}
-
-	contentType := mime.TypeByExtension(path.Ext(reqPath))
-	w.Header().Set("Content-Type", contentType)
-
+func getFileSystem() http.FileSystem {
 	if config.IsProduction {
-		cacheControl := fmt.Sprintf("public, max-age=%d, immutable", maxAge)
-		w.Header().Set("Cache-Control", cacheControl)
+		staticContent, err := fs.Sub(fs.FS(assetsFS), "dist")
+		if err != nil {
+			panic(err)
+		}
+		return http.FS(staticContent)
 	}
 
-	_, err = io.Copy(w, f)
-	return err
+	workDir, _ := os.Getwd()
+	filesDir := http.Dir(filepath.Join(workDir, "web", "dist"))
+	return filesDir
 }

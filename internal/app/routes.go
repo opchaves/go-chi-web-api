@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"html/template"
 	"log/slog"
 	"net/http"
 	"time"
@@ -11,9 +12,9 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/go-chi/httplog/v2"
 	"github.com/go-chi/render"
+	"github.com/opchaves/go-kom/config"
 	"github.com/opchaves/go-kom/internal/app/auth/jwt"
 	"github.com/opchaves/go-kom/internal/app/auth/pwdless"
-	"github.com/opchaves/go-kom/config"
 	"github.com/opchaves/go-kom/server"
 	"github.com/opchaves/go-kom/web"
 )
@@ -38,6 +39,14 @@ func AddRoutes(r *server.Server) error {
 		return err
 	}
 
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		t := template.Must(template.ParseFiles("internal/views/index.html"))
+		t.Execute(w, nil)
+	})
+
+	// Serve react app
+	web.FileServer(r, "/app")
+
 	r.Mount("/auth", authResource.Router())
 	r.Group(func(r chi.Router) {
 		r.Use(authResource.TokenAuth.Verifier())
@@ -59,8 +68,6 @@ func AddRoutes(r *server.Server) error {
 	r.Get("/health", func(w http.ResponseWriter, _ *http.Request) {
 		w.Write([]byte("ok"))
 	})
-
-	r.Get("/*", web.WebHandler)
 
 	return nil
 }

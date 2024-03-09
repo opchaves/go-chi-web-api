@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, envDir, "");
 
   return {
+    base: env.VITE_BASE_URL,
     server: {
       port: +env.WEB_PORT,
       proxy: {
