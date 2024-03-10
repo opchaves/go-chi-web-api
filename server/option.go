@@ -10,7 +10,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/opchaves/go-kom/config"
 	"github.com/opchaves/go-kom/services"
-	"github.com/opchaves/go-kom/stores"
 )
 
 // Allows to specify options to the server.
@@ -70,14 +69,8 @@ func UseDB(ctx context.Context) Option {
 	}
 }
 
-func UseStores() Option {
-	return func(s *Server) {
-		s.Stores = stores.New(s.DB)
-	}
-}
-
 func UseServices() Option {
 	return func(s *Server) {
-		s.Services = services.New(s.Stores)
+		s.Services = services.New(s.DB)
 	}
 }

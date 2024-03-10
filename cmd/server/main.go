@@ -4,8 +4,8 @@ import (
 	"context"
 	"os"
 
-	"github.com/opchaves/go-kom/internal/app"
 	"github.com/opchaves/go-kom/config"
+	"github.com/opchaves/go-kom/internal/app"
 	"github.com/opchaves/go-kom/server"
 )
 
@@ -18,7 +18,6 @@ func main() {
 		server.UsePort(config.Port),
 		server.UseLogger(),
 		server.UseDB(ctx),
-		server.UseStores(),
 		server.UseServices(),
 	)
 

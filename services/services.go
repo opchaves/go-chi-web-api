@@ -1,15 +1,23 @@
 package services
 
 import (
-	"github.com/opchaves/go-kom/stores"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/opchaves/go-kom/model"
 )
 
 type Services struct {
+	DB *pgxpool.Pool
+	Q  *model.Queries
+
 	Workspace WorkspaceService
 }
 
-func New(st *stores.Stores) *Services {
+func New(db *pgxpool.Pool) *Services {
+	q := model.New(db)
 	return &Services{
-		Workspace: &workspaceService{stores: st},
+		DB: db,
+		Q:  q,
+
+		Workspace: &workspaceService{DB: db, Q: q},
 	}
 }

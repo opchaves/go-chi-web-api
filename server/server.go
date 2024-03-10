@@ -9,7 +9,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/opchaves/go-kom/model"
 	"github.com/opchaves/go-kom/services"
-	"github.com/opchaves/go-kom/stores"
 )
 
 type Server struct {
@@ -22,7 +21,6 @@ type Server struct {
 	Logger   *httplog.Logger
 	DB       *pgxpool.Pool
 	Q        *model.Queries
-	Stores   *stores.Stores
 	Services *services.Services
 }
 

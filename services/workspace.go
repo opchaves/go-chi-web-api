@@ -3,8 +3,8 @@ package services
 import (
 	"context"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/opchaves/go-kom/model"
-	"github.com/opchaves/go-kom/stores"
 	"github.com/opchaves/go-kom/pkg/util"
 )
 
@@ -14,17 +14,18 @@ type (
 	}
 
 	workspaceService struct {
-		stores *stores.Stores
+		DB *pgxpool.Pool
+		Q  *model.Queries
 	}
 )
 
 func (s *workspaceService) Create(ctx context.Context, input *model.CreateWorkspaceParams) (*model.Workspace, error) {
-	tx, err := s.stores.DB.Begin(ctx)
+	tx, err := s.DB.Begin(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	qTx := s.stores.Q.WithTx(tx)
+	qTx := s.Q.WithTx(tx)
 	defer tx.Rollback(ctx)
 
 	workspace, err := qTx.CreateWorkspace(ctx, *input)
