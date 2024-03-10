@@ -39,7 +39,7 @@ func AddRoutes(r *Server) error {
 	}
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		t := template.Must(template.ParseFiles("internal/views/index.html"))
+		t := template.Must(template.ParseFiles("views/index.html"))
 		t.Execute(w, nil)
 	})
 
