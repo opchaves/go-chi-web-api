@@ -1,4 +1,4 @@
-package app
+package server
 
 import (
 	"fmt"
@@ -10,9 +10,9 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 	"github.com/google/uuid"
-	"github.com/opchaves/go-kom/internal/app/auth/jwt"
 	"github.com/opchaves/go-kom/model"
 	"github.com/opchaves/go-kom/pkg/util"
+	"github.com/opchaves/go-kom/server/auth/jwt"
 )
 
 type transactionRequest struct {

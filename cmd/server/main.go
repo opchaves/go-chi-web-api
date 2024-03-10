@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/opchaves/go-kom/config"
-	"github.com/opchaves/go-kom/internal/app"
 	"github.com/opchaves/go-kom/server"
 )
 
@@ -23,7 +22,7 @@ func main() {
 
 	defer s.DB.Close()
 
-	if err := app.AddRoutes(s); err != nil {
+	if err := server.AddRoutes(s); err != nil {
 		s.Logger.ErrorContext(ctx, "error adding routes", err)
 		os.Exit(1)
 	}

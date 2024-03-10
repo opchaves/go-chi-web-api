@@ -1,4 +1,4 @@
-package app
+package server
 
 import (
 	"context"
@@ -13,13 +13,12 @@ import (
 	"github.com/go-chi/httplog/v2"
 	"github.com/go-chi/render"
 	"github.com/opchaves/go-kom/config"
-	"github.com/opchaves/go-kom/internal/app/auth/jwt"
-	"github.com/opchaves/go-kom/internal/app/auth/pwdless"
-	"github.com/opchaves/go-kom/server"
+	"github.com/opchaves/go-kom/server/auth/jwt"
+	"github.com/opchaves/go-kom/server/auth/pwdless"
 	"github.com/opchaves/go-kom/web"
 )
 
-func AddRoutes(r *server.Server) error {
+func AddRoutes(r *Server) error {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Timeout(15 * time.Second))
@@ -30,7 +29,7 @@ func AddRoutes(r *server.Server) error {
 		r.Use(corsConfig().Handler)
 	}
 
-	api := New(r.DB, r.Services)
+	api := NewHandler(r.DB, r.Services)
 
 	// TODO: refactor pwdless to use services
 	authResource, err := pwdless.NewResource(api.DB, api.Q)

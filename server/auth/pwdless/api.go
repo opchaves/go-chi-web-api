@@ -4,9 +4,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/opchaves/go-kom/internal/app/auth/jwt"
-	"github.com/opchaves/go-kom/internal/app/email"
 	"github.com/opchaves/go-kom/model"
+	"github.com/opchaves/go-kom/server/auth/jwt"
+	"github.com/opchaves/go-kom/server/email"
 )
 
 // Mailer defines methods to send account emails.

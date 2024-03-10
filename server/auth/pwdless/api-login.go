@@ -11,7 +11,7 @@ import (
 	"github.com/go-chi/render"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
-	"github.com/opchaves/go-kom/internal/app/email"
+	"github.com/opchaves/go-kom/server/email"
 )
 
 type loginRequest struct {

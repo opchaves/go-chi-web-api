@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
-	"github.com/opchaves/go-kom/internal/app/auth/jwt"
+	"github.com/opchaves/go-kom/server/auth/jwt"
 )
 
 func (rs *Resource) logout(w http.ResponseWriter, r *http.Request) {

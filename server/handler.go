@@ -1,4 +1,4 @@
-package app
+package server
 
 import (
 	"log/slog"
@@ -16,7 +16,7 @@ type App struct {
 	Services *services.Services
 }
 
-func New(db *pgxpool.Pool, servs *services.Services) *App {
+func NewHandler(db *pgxpool.Pool, servs *services.Services) *App {
 	return &App{
 		DB:       db,
 		Q:        model.New(db),
