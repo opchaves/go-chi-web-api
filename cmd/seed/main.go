@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -9,8 +10,6 @@ import (
 	"github.com/opchaves/go-kom/internal/model"
 	"github.com/opchaves/go-kom/pkg/password"
 )
-
-// TODO maybe use faker to generate random data
 
 func main() {
 	ctx := context.Background()
@@ -23,39 +22,21 @@ func main() {
 	defer db.Close()
 	query := model.New(db)
 
-	_, err = db.Exec(ctx, "DELETE FROM transactions")
-	if err != nil {
-		log.Fatalf("Unable to delete transactions: %v\n", err)
+	tablesToDelete := []string{
+		"transactions",
+		"categories",
+		"accounts",
+		"workspaces_users",
+		"workspaces",
+		"tokens",
+		"users",
 	}
 
-	_, err = db.Exec(ctx, "DELETE FROM categories")
-	if err != nil {
-		log.Fatalf("Unable to delete categories: %v\n", err)
-	}
-
-	_, err = db.Exec(ctx, "DELETE FROM accounts")
-	if err != nil {
-		log.Fatalf("Unable to delete accounts: %v\n", err)
-	}
-
-	_, err = db.Exec(ctx, "DELETE FROM workspaces_users")
-	if err != nil {
-		log.Fatalf("Unable to delete workspaces_users: %v\n", err)
-	}
-
-	_, err = db.Exec(ctx, "DELETE FROM workspaces")
-	if err != nil {
-		log.Fatalf("Unable to delete workspaces: %v\n", err)
-	}
-
-	_, err = db.Exec(ctx, "DELETE FROM tokens")
-	if err != nil {
-		log.Fatalf("Unable to delete tokens: %v\n", err)
-	}
-
-	_, err = db.Exec(ctx, "DELETE FROM users")
-	if err != nil {
-		log.Fatalf("Unable to delete users: %v\n", err)
+	for _, t := range tablesToDelete {
+		_, err = db.Exec(ctx, fmt.Sprintf("DELETE FROM %s", t))
+		if err != nil {
+			log.Fatalf("Unable to delete table %v. err: %v\n", t, err)
+		}
 	}
 
 	password, _ := password.Hash("password12")
