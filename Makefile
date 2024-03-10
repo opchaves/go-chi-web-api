@@ -9,7 +9,7 @@ define setup_env
   $(eval export)
 endef
 
-withEnv: 
+with-env: 
 	$(call setup_env)
 
 run:
@@ -46,86 +46,55 @@ build-web:
 start:
 	./bin/server
 
-docker-up: withEnv
+docker-up: with-env
 	@docker compose up --build -d
 
-docker-down: withEnv
+docker-down: with-env
 	@docker compose down
 
-docker-build: withEnv
+docker-build: with-env
 	@docker build --target prod -t ${IMAGE_NAME}:${V_TAG} .
 
-docker-run: withEnv
+docker-run: with-env
 	@docker run --rm --name ${APP_NAME} -p 8080:8080 ${IMAGE_NAME}:${V_TAG}
 
-db-sh: withEnv
+psql: with-env
 	@docker compose exec postgres psql -U postgres -d app_dev
 
-db-schema-dump: withEnv
+db-schema-dump: with-env
 	@docker compose exec postgres pg_dump -U postgres --schema-only -d app_dev > db/schema.sql
 
-seed: withEnv
+seed: with-env
 	@go run ./cmd/seed/main.go
 
-migrate: withEnv
-	@if command -v migrate > /dev/null; then \
-	  migrate -database ${DATABASE_URL} -path ./db/migrations up;\
-	else \
-	  echo "Installing 'migrate' tool...";\
-	  make install-tools;\
-	  echo "Running migrate up...";\
-	  migrate -database ${DATABASE_URL} -path ./db/migrations up;\
-	fi
+migrate: with-env
+	@make migrate-dev
+	@make migrate-test
+
+migrate-dev: with-env
+	@migrate -database ${DATABASE_URL} -path ./db/migrations up;\
+
+migrate-test: with-env
+	@migrate -database ${DATABASE_URL_TEST} -path ./db/migrations up;\
 
 migrate-new:
-	@if command -v migrate > /dev/null; then \
-	  migrate create -ext sql -dir db/migrations -seq $(name);\
-	else \
-	  echo "Installing 'migrate' tool...";\
-	  make install-tools; \
-	  echo "Creating new migration '$(name)'...";\
-	  migrate create -ext sql -dir db/migrations -seq $(name);\
-	fi
+	migrate create -ext sql -dir db/migrations -seq $(name);\
 
-migrate-down: withEnv
+migrate-down: with-env
 	@migrate -database ${DATABASE_URL} -path ./db/migrations down
 
-migrate-drop: withEnv
+migrate-drop: with-env
 	@migrate -database ${DATABASE_URL} -path ./db/migrations drop
 
 install-tools:
-	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	@go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	@go install github.com/cosmtrek/air@latest
+	@go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
 # Live Reload
 watch-api:
-	@if command -v air > /dev/null; then \
-	  air; \
-	  echo "Watching...";\
-	else \
-	  read -p "Go's 'air' is not installed on your machine. Do you want to install it? [Y/n] " choice; \
-	  if [ "$$choice" != "n" ] && [ "$$choice" != "N" ]; then \
-	    go install github.com/cosmtrek/air@latest; \
-	    air; \
-	    echo "Watching...";\
-	  else \
-	    echo "You chose not to install air. Exiting..."; \
-	    exit 1; \
-	  fi; \
-	fi
+	air
 
 # Generate Go code from SQL
 sqlc:
-	@if command -v sqlc > /dev/null; then \
-	  echo "Gerating Go code...";\
-	  sqlc generate; \
-	else \
-	  read -p "Go's 'sqlc' is not installed on your machine. Do you want to install it? [Y/n] " choice; \
-	  if [ "$$choice" != "n" ] && [ "$$choice" != "N" ]; then \
-			go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest; \
-	  	echo "Gerating Go code...";\
-	  	sqlc generate; \
-	  else \
-	    echo "You chose not to install sqlc. Exiting..."; \
-	    exit 1; \
-	  fi; \
-	fi
+	sqlc generate
