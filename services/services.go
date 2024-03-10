@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/opchaves/go-kom/internal/stores"
+	"github.com/opchaves/go-kom/stores"
 )
 
 type Services struct {

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/opchaves/go-kom/model"
-	"github.com/opchaves/go-kom/internal/stores"
+	"github.com/opchaves/go-kom/stores"
 	"github.com/opchaves/go-kom/pkg/util"
 )
 
