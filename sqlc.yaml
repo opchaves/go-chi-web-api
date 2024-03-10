@@ -3,11 +3,11 @@ version: "2"
 sql:
   - engine: "postgresql"
     schema: "./db/schema.sql"
-    queries: "./internal/model"
+    queries: "./model"
     gen:
       go:
         package: "model"
-        out: "./internal/model"
+        out: "./model"
         sql_package: "pgx/v5"
         emit_result_struct_pointers: true
         emit_pointers_for_null_types: true
