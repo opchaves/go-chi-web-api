@@ -7,7 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/opchaves/go-kom/config"
-	"github.com/opchaves/go-kom/internal/model"
+	"github.com/opchaves/go-kom/model"
 	"github.com/opchaves/go-kom/pkg/password"
 )
 

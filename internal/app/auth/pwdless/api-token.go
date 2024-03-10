@@ -15,7 +15,7 @@ import (
 	"github.com/mssola/useragent"
 	"github.com/opchaves/go-kom/internal/app/auth/jwt"
 	"github.com/opchaves/go-kom/config"
-	"github.com/opchaves/go-kom/internal/model"
+	"github.com/opchaves/go-kom/model"
 )
 
 type tokenRequest struct {

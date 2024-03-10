@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/opchaves/go-kom/internal/app/auth/jwt"
 	"github.com/opchaves/go-kom/config"
-	"github.com/opchaves/go-kom/internal/model"
+	"github.com/opchaves/go-kom/model"
 )
 
 func (rs *Resource) refresh(w http.ResponseWriter, r *http.Request) {

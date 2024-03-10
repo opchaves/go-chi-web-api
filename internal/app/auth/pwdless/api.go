@@ -6,7 +6,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/opchaves/go-kom/internal/app/auth/jwt"
 	"github.com/opchaves/go-kom/internal/app/email"
-	"github.com/opchaves/go-kom/internal/model"
+	"github.com/opchaves/go-kom/model"
 )
 
 // Mailer defines methods to send account emails.
